@@ -12,8 +12,8 @@ FABRICA_TEST(GlfwBackendInitializeFailsWhenGlfwIsNotEnabled) {
   FABRICA_EXPECT_TRUE(initialized);
 #else
   FABRICA_EXPECT_TRUE(!initialized);
+  FABRICA_EXPECT_TRUE(!backend.PresentFrame());
 #endif
 }
 
 }  // namespace
-

@@ -12,6 +12,7 @@ class IWindowBackend {
   virtual ~IWindowBackend() = default;
   virtual bool Initialize(const WindowConfig& config) = 0;
   virtual void PollEvents() = 0;
+  virtual bool PresentFrame() = 0;
   virtual bool ShouldClose() const = 0;
   virtual void* GetNativeHandle() const = 0;
   virtual Vec2i GetFramebufferSize() const = 0;
@@ -21,4 +22,3 @@ class IWindowBackend {
 };
 
 }  // namespace Fabrica::Core::Window
-

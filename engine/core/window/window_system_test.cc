@@ -20,6 +20,11 @@ class FakeWindowBackend final : public Fabrica::Core::Window::IWindowBackend {
     }
   }
 
+  bool PresentFrame() override {
+    ++present_calls_;
+    return initialized_;
+  }
+
   bool ShouldClose() const override { return false; }
   void* GetNativeHandle() const override {
     return initialized_ ? reinterpret_cast<void*>(0x1234) : nullptr;
@@ -33,6 +38,7 @@ class FakeWindowBackend final : public Fabrica::Core::Window::IWindowBackend {
  private:
   EventSink event_sink_;
   Fabrica::Core::Window::Vec2i framebuffer_{};
+  int present_calls_ = 0;
   bool initialized_ = false;
 };
 
@@ -52,7 +58,7 @@ FABRICA_TEST(WindowSystemCollectsBackendEvents) {
   FABRICA_EXPECT_TRUE(popped);
   FABRICA_EXPECT_EQ(event.resize.width, 1600);
   FABRICA_EXPECT_EQ(event.resize.height, 900);
+  FABRICA_EXPECT_TRUE(window_system.PresentFrame());
 }
 
 }  // namespace
-

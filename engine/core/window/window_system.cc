@@ -27,6 +27,13 @@ void WindowSystem::PollEvents() {
   }
 }
 
+bool WindowSystem::PresentFrame() {
+  if (!backend_) {
+    return false;
+  }
+  return backend_->PresentFrame();
+}
+
 bool WindowSystem::PopEvent(WindowEvent* event) {
   return event_queue_.Pop(event);
 }
@@ -56,4 +63,3 @@ void WindowSystem::Shutdown() {
 }
 
 }  // namespace Fabrica::Core::Window
-

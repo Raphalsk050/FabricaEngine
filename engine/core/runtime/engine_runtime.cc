@@ -98,6 +98,10 @@ Core::Status EngineRuntime::Tick() {
     return event_status;
   }
 
+  if (stop_requested_) {
+    return Core::Status::Cancelled("Runtime stop requested");
+  }
+
   foreground_executor_->Pump(pump_foreground_until_empty_);
 
   Core::Status frame_status = AdvanceFrame();
@@ -105,6 +109,12 @@ Core::Status EngineRuntime::Tick() {
     last_error_ = frame_status;
     RequestStop();
     return frame_status;
+  }
+
+  if (!window_system_->PresentFrame()) {
+    last_error_ = Core::Status::Unavailable("Failed to present window frame");
+    RequestStop();
+    return last_error_;
   }
 
   if (window_system_->ShouldClose()) {

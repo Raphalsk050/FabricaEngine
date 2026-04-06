@@ -11,6 +11,7 @@ class GlfwWindowBackend final : public IWindowBackend {
 
   bool Initialize(const WindowConfig& config) override;
   void PollEvents() override;
+  bool PresentFrame() override;
   bool ShouldClose() const override;
   void* GetNativeHandle() const override;
   Vec2i GetFramebufferSize() const override;
@@ -26,4 +27,3 @@ class GlfwWindowBackend final : public IWindowBackend {
 };
 
 }  // namespace Fabrica::Core::Window
-

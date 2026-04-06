@@ -13,6 +13,7 @@ class WindowSystem {
 
   bool Initialize(const WindowConfig& config);
   void PollEvents();
+  bool PresentFrame();
   bool PopEvent(WindowEvent* event);
   bool ShouldClose() const;
   Vec2i GetFramebufferSize() const;
@@ -25,4 +26,3 @@ class WindowSystem {
 };
 
 }  // namespace Fabrica::Core::Window
-

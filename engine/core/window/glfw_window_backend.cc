@@ -26,6 +26,8 @@ bool GlfwWindowBackend::Initialize(const WindowConfig& config) {
   }
 
   native_window_ = window;
+  glfwMakeContextCurrent(window);
+  glfwSwapInterval(config.vsync_enabled ? 1 : 0);
   glfwSetWindowUserPointer(window, this);
 
   glfwSetFramebufferSizeCallback(
@@ -113,9 +115,30 @@ bool GlfwWindowBackend::Initialize(const WindowConfig& config) {
 void GlfwWindowBackend::PollEvents() {
 #if defined(FABRICA_USE_GLFW)
   glfwPollEvents();
-  should_close_ = glfwWindowShouldClose(static_cast<GLFWwindow*>(native_window_)) != 0;
+  if (native_window_ == nullptr) {
+    should_close_ = true;
+    return;
+  }
+
+  should_close_ =
+      glfwWindowShouldClose(static_cast<GLFWwindow*>(native_window_)) != 0;
 #else
   should_close_ = true;
+#endif
+}
+
+bool GlfwWindowBackend::PresentFrame() {
+#if defined(FABRICA_USE_GLFW)
+  if (native_window_ == nullptr) {
+    return false;
+  }
+
+  GLFWwindow* window = static_cast<GLFWwindow*>(native_window_);
+  glfwMakeContextCurrent(window);
+  glfwSwapBuffers(window);
+  return true;
+#else
+  return false;
 #endif
 }
 

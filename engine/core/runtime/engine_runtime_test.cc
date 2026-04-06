@@ -7,8 +7,8 @@ namespace {
 
 class FakeWindowBackend final : public Fabrica::Core::Window::IWindowBackend {
  public:
-  explicit FakeWindowBackend(int close_after_polls)
-      : close_after_polls_(close_after_polls) {}
+  explicit FakeWindowBackend(int close_after_polls, bool present_result = true)
+      : close_after_polls_(close_after_polls), present_result_(present_result) {}
 
   bool Initialize(const Fabrica::Core::Window::WindowConfig& config) override {
     framebuffer_size_ = {.x = config.width, .y = config.height};
@@ -34,6 +34,11 @@ class FakeWindowBackend final : public Fabrica::Core::Window::IWindowBackend {
     }
   }
 
+  bool PresentFrame() override {
+    ++present_count_;
+    return present_result_;
+  }
+
   bool ShouldClose() const override { return should_close_; }
 
   void* GetNativeHandle() const override {
@@ -56,8 +61,10 @@ class FakeWindowBackend final : public Fabrica::Core::Window::IWindowBackend {
   Fabrica::Core::Window::Vec2i framebuffer_size_{};
   int close_after_polls_ = 1;
   int poll_count_ = 0;
+  int present_count_ = 0;
   bool initialized_ = false;
   bool should_close_ = false;
+  bool present_result_ = true;
 };
 
 class FailingWindowBackend final : public Fabrica::Core::Window::IWindowBackend {
@@ -66,6 +73,7 @@ class FailingWindowBackend final : public Fabrica::Core::Window::IWindowBackend 
     return false;
   }
   void PollEvents() override {}
+  bool PresentFrame() override { return false; }
   bool ShouldClose() const override { return true; }
   void* GetNativeHandle() const override { return nullptr; }
   Fabrica::Core::Window::Vec2i GetFramebufferSize() const override { return {}; }
@@ -139,6 +147,36 @@ FABRICA_TEST(EngineRuntimeStopsOnUpdateFailure) {
 
   FABRICA_EXPECT_TRUE(!run_status.ok());
   FABRICA_EXPECT_TRUE(stop_called);
+}
+
+FABRICA_TEST(EngineRuntimeStopsOnPresentFailure) {
+  Fabrica::Core::Runtime::EngineRuntime runtime;
+
+  bool stop_called = false;
+  Fabrica::Core::Runtime::RuntimeConfig config;
+  config.window_backend = std::make_unique<FakeWindowBackend>(10, false);
+  config.callbacks.start = Fabrica::Core::Invocable<Fabrica::Core::Status()>(
+      []() { return Fabrica::Core::Status::Ok(); });
+  config.callbacks.update =
+      Fabrica::Core::Invocable<Fabrica::Core::Status(const Fabrica::Core::Runtime::FrameContext&)>(
+          [](const Fabrica::Core::Runtime::FrameContext&) {
+            return Fabrica::Core::Status::Ok();
+          });
+  config.callbacks.render =
+      Fabrica::Core::Invocable<Fabrica::Core::Status(const Fabrica::Core::Runtime::FrameContext&)>(
+          [](const Fabrica::Core::Runtime::FrameContext&) {
+            return Fabrica::Core::Status::Ok();
+          });
+  config.callbacks.stop = Fabrica::Core::Invocable<void()>([&stop_called]() {
+    stop_called = true;
+  });
+
+  FABRICA_EXPECT_TRUE(runtime.Initialize(std::move(config)).ok());
+  const Fabrica::Core::Status run_status = runtime.Run();
+
+  FABRICA_EXPECT_TRUE(!run_status.ok());
+  FABRICA_EXPECT_TRUE(stop_called);
+  FABRICA_EXPECT_EQ(run_status.code(), Fabrica::Core::ErrorCode::kUnavailable);
 }
 
 FABRICA_TEST(EngineRuntimeCleansUpAfterInitializationFailure) {
