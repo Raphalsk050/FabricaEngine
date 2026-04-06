@@ -89,6 +89,7 @@ class World {
 
   struct Archetype {
     ComponentMask mask = 0;
+    size_t entity_limit = 0;
     std::vector<EntityId> entities;
     std::array<ArchetypeColumn, kMaxComponentTypes> columns{};
 
@@ -467,3 +468,4 @@ void World::InvokeForEach(
 }
 
 }  // namespace Fabrica::Core::ECS
+

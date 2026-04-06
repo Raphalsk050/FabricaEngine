@@ -19,6 +19,10 @@ World::World(const WorldConfig& config) : config_(config) {
 }
 
 EntityId World::CreateEntity() {
+  if (runtime_sealed_ && alive_entity_count_ >= entity_capacity_limit_) {
+    return EntityId::Invalid();
+  }
+
   std::uint32_t index = 0;
   bool reused_index = false;
 
@@ -27,11 +31,6 @@ EntityId World::CreateEntity() {
     free_entity_indices_.pop_back();
     reused_index = true;
   } else {
-    const size_t active_and_dead_entities = entity_records_.size() - 1;
-    if (runtime_sealed_ && active_and_dead_entities >= entity_capacity_limit_) {
-      return EntityId::Invalid();
-    }
-
     index = static_cast<std::uint32_t>(entity_records_.size());
     entity_records_.push_back(EntityRecord{});
   }
@@ -109,7 +108,7 @@ Core::Status World::ReserveEntities(size_t capacity) {
         "Entity reserve capacity cannot be smaller than alive entity count");
   }
 
-  entity_capacity_limit_ = std::max(entity_capacity_limit_, capacity);
+  entity_capacity_limit_ = capacity;
   entity_records_.reserve(entity_capacity_limit_ + 1);
 
   if (!archetypes_.empty()) {
@@ -136,6 +135,15 @@ Core::Status World::ReserveArchetype(ComponentMask mask, size_t entity_capacity)
 }
 
 Core::Status World::SealForRuntime() {
+  if (entity_capacity_limit_ < alive_entity_count_) {
+    entity_capacity_limit_ = alive_entity_count_;
+  }
+
+  for (Archetype& archetype : archetypes_) {
+    archetype.entity_limit =
+        std::max(archetype.entity_limit, archetype.entities.size());
+  }
+
   runtime_sealed_ = true;
   return Core::Status::Ok();
 }
@@ -266,13 +274,16 @@ const void* World::ComponentAt(const EntityRecord& entity_record,
 }
 
 void World::Archetype::Reserve(size_t entity_capacity) {
-  entities.reserve(std::max(entities.capacity(), entity_capacity));
+  const size_t resolved_capacity = std::max(entity_capacity, entities.size());
+  entity_limit = resolved_capacity;
+
+  entities.reserve(std::max(entities.capacity(), resolved_capacity));
   for (ArchetypeColumn& column : columns) {
     if (!column.active) {
       continue;
     }
 
-    const size_t requested_bytes = entity_capacity * column.element_size;
+    const size_t requested_bytes = resolved_capacity * column.element_size;
     column.storage.reserve(std::max(column.storage.capacity(), requested_bytes));
   }
 }
@@ -280,7 +291,7 @@ void World::Archetype::Reserve(size_t entity_capacity) {
 bool World::Archetype::Append(EntityId entity, bool runtime_sealed, size_t* out_row) {
   const size_t row = entities.size();
 
-  if (runtime_sealed && row >= entities.capacity()) {
+  if (runtime_sealed && row >= entity_limit) {
     return false;
   }
 
@@ -290,6 +301,10 @@ bool World::Archetype::Append(EntityId entity, bool runtime_sealed, size_t* out_
     }
 
     const size_t required_bytes = (row + 1) * column.element_size;
+    if (runtime_sealed && required_bytes > (entity_limit * column.element_size)) {
+      return false;
+    }
+
     if (runtime_sealed && required_bytes > column.storage.capacity()) {
       return false;
     }
