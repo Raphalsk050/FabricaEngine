@@ -28,6 +28,76 @@ bool GlfwWindowBackend::Initialize(const WindowConfig& config) {
   native_window_ = window;
   glfwSetWindowUserPointer(window, this);
 
+  glfwSetFramebufferSizeCallback(
+      window, +[](GLFWwindow* glfw_window, int width, int height) {
+        auto* backend = static_cast<GlfwWindowBackend*>(
+            glfwGetWindowUserPointer(glfw_window));
+        if (backend == nullptr) {
+          return;
+        }
+        backend->framebuffer_size_ = {.x = width, .y = height};
+        if (backend->event_sink_) {
+          backend->event_sink_(WindowEvent::Resize(width, height));
+        }
+      });
+
+  glfwSetWindowFocusCallback(window, +[](GLFWwindow* glfw_window, int focused) {
+    auto* backend = static_cast<GlfwWindowBackend*>(
+        glfwGetWindowUserPointer(glfw_window));
+    if (backend == nullptr || !backend->event_sink_) {
+      return;
+    }
+    backend->event_sink_(WindowEvent::Focus(focused != 0));
+  });
+
+  glfwSetWindowCloseCallback(window, +[](GLFWwindow* glfw_window) {
+    auto* backend = static_cast<GlfwWindowBackend*>(
+        glfwGetWindowUserPointer(glfw_window));
+    if (backend == nullptr) {
+      return;
+    }
+    backend->should_close_ = true;
+    if (backend->event_sink_) {
+      backend->event_sink_(WindowEvent::Close());
+    }
+  });
+
+  glfwSetKeyCallback(window, +[](GLFWwindow* glfw_window, int key, int, int action,
+                                  int) {
+    auto* backend = static_cast<GlfwWindowBackend*>(
+        glfwGetWindowUserPointer(glfw_window));
+    if (backend == nullptr || !backend->event_sink_) {
+      return;
+    }
+    if (action == GLFW_PRESS) {
+      backend->event_sink_(WindowEvent::KeyDown(key, false));
+    } else if (action == GLFW_REPEAT) {
+      backend->event_sink_(WindowEvent::KeyDown(key, true));
+    } else if (action == GLFW_RELEASE) {
+      backend->event_sink_(WindowEvent::KeyUp(key));
+    }
+  });
+
+  glfwSetCursorPosCallback(window, +[](GLFWwindow* glfw_window, double x, double y) {
+    auto* backend = static_cast<GlfwWindowBackend*>(
+        glfwGetWindowUserPointer(glfw_window));
+    if (backend == nullptr || !backend->event_sink_) {
+      return;
+    }
+    backend->event_sink_(
+        WindowEvent::MouseMove(static_cast<float>(x), static_cast<float>(y)));
+  });
+
+  glfwSetMouseButtonCallback(
+      window, +[](GLFWwindow* glfw_window, int button, int action, int) {
+        auto* backend = static_cast<GlfwWindowBackend*>(
+            glfwGetWindowUserPointer(glfw_window));
+        if (backend == nullptr || !backend->event_sink_) {
+          return;
+        }
+        backend->event_sink_(WindowEvent::MouseButton(button, action));
+      });
+
 #if FABRICA_WINDOW_VERBOSE_LOG
   FABRICA_LOG(Window, Debug)
       << "[Window] Created " << config.width << "x" << config.height
