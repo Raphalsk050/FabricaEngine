@@ -125,4 +125,59 @@ FABRICA_TEST(ECSWorldRejectsStaleEntityHandles) {
   FABRICA_EXPECT_TRUE(!stale_status.ok());
 }
 
+FABRICA_TEST(ECSWorldSealedRuntimeRejectsArchetypeCreation) {
+  Fabrica::Core::ECS::World world;
+  world.RegisterComponent<Transform>();
+  world.RegisterComponent<Velocity>();
+
+  FABRICA_EXPECT_TRUE(world.ReserveEntities(2).ok());
+  FABRICA_EXPECT_TRUE(world.ReserveArchetype<Transform>(2).ok());
+  FABRICA_EXPECT_TRUE(world.SealForRuntime().ok());
+
+  const auto entity = world.CreateEntity();
+  FABRICA_EXPECT_TRUE(entity.IsValid());
+  FABRICA_EXPECT_TRUE(
+      world.AddComponent(entity, Transform{.x = 1.0f, .y = 1.0f, .z = 1.0f}).ok());
+
+  const Fabrica::Core::Status add_velocity_status =
+      world.AddComponent(entity, Velocity{.x = 2.0f, .y = 2.0f, .z = 2.0f});
+  FABRICA_EXPECT_TRUE(!add_velocity_status.ok());
+}
+
+FABRICA_TEST(ECSWorldSealedRuntimeRejectsCapacityGrowth) {
+  Fabrica::Core::ECS::World world;
+  world.RegisterComponent<Transform>();
+
+  FABRICA_EXPECT_TRUE(world.ReserveEntities(2).ok());
+  FABRICA_EXPECT_TRUE(world.ReserveArchetype<Transform>(1).ok());
+  FABRICA_EXPECT_TRUE(world.SealForRuntime().ok());
+
+  const auto first = world.CreateEntity();
+  const auto second = world.CreateEntity();
+  FABRICA_EXPECT_TRUE(first.IsValid());
+  FABRICA_EXPECT_TRUE(second.IsValid());
+
+  FABRICA_EXPECT_TRUE(
+      world.AddComponent(first, Transform{.x = 1.0f, .y = 0.0f, .z = 0.0f}).ok());
+
+  const Fabrica::Core::Status second_add_status =
+      world.AddComponent(second, Transform{.x = 2.0f, .y = 0.0f, .z = 0.0f});
+  FABRICA_EXPECT_TRUE(!second_add_status.ok());
+}
+
+FABRICA_TEST(ECSWorldSealedRuntimeRejectsEntityGrowth) {
+  Fabrica::Core::ECS::World world;
+  world.RegisterComponent<Transform>();
+
+  FABRICA_EXPECT_TRUE(world.ReserveEntities(1).ok());
+  FABRICA_EXPECT_TRUE(world.ReserveArchetype<Transform>(1).ok());
+  FABRICA_EXPECT_TRUE(world.SealForRuntime().ok());
+
+  const auto first = world.CreateEntity();
+  const auto second = world.CreateEntity();
+
+  FABRICA_EXPECT_TRUE(first.IsValid());
+  FABRICA_EXPECT_TRUE(!second.IsValid());
+}
+
 }  // namespace

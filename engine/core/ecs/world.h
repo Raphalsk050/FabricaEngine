@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
+#include <limits>
 #include <type_traits>
 #include <typeinfo>
 #include <unordered_map>
@@ -38,6 +39,15 @@ class World {
 
   size_t GetAliveEntityCount() const { return alive_entity_count_; }
   size_t GetArchetypeCount() const;
+
+  Core::Status ReserveEntities(size_t capacity);
+  Core::Status ReserveArchetype(ComponentMask mask, size_t entity_capacity);
+
+  template <typename... Components>
+  Core::Status ReserveArchetype(size_t entity_capacity);
+
+  Core::Status SealForRuntime();
+  bool IsRuntimeSealed() const { return runtime_sealed_; }
 
   template <typename T>
   Core::Status RegisterComponent();
@@ -83,7 +93,7 @@ class World {
     std::array<ArchetypeColumn, kMaxComponentTypes> columns{};
 
     void Reserve(size_t entity_capacity);
-    size_t Append(EntityId entity);
+    bool Append(EntityId entity, bool runtime_sealed, size_t* out_row);
     void RemoveSwapBack(size_t row, EntityId* moved_entity);
     void* MutableAt(ComponentTypeIndex component, size_t row);
     const void* At(ComponentTypeIndex component, size_t row) const;
@@ -98,6 +108,8 @@ class World {
   };
 
   static constexpr std::uint32_t kInvalidEntityIndex = 0;
+  static constexpr std::uint32_t kInvalidArchetypeIndex =
+      std::numeric_limits<std::uint32_t>::max();
   static constexpr ComponentTypeIndex kInvalidComponentType =
       static_cast<ComponentTypeIndex>(kMaxComponentTypes);
 
@@ -114,6 +126,9 @@ class World {
 
   template <typename T>
   ComponentTypeIndex RequireComponentTypeIndex() const;
+
+  template <typename... Components>
+  Core::Status BuildMask(ComponentMask* out_mask) const;
 
   std::uint32_t GetOrCreateArchetype(ComponentMask mask);
   EntityRecord* GetEntityRecord(EntityId entity);
@@ -137,6 +152,9 @@ class World {
 
   WorldConfig config_;
   std::uint32_t alive_entity_count_ = 0;
+  bool runtime_sealed_ = false;
+  size_t entity_capacity_limit_ = 0;
+
   std::vector<EntityRecord> entity_records_;
   std::vector<std::uint32_t> free_entity_indices_;
 
@@ -154,6 +172,11 @@ Core::Status World::RegisterComponent() {
                 "ECS components must be trivially copyable");
   static_assert(std::is_trivially_destructible_v<T>,
                 "ECS components must be trivially destructible");
+
+  if (runtime_sealed_) {
+    return Core::Status(Core::ErrorCode::kFailedPrecondition,
+                        "Cannot register components after runtime seal");
+  }
 
   const void* component_key = ComponentTypeKey<T>();
   if (component_type_lookup_.contains(component_key)) {
@@ -207,10 +230,19 @@ Core::Status World::AddComponent(EntityId entity, const T& component) {
 
   const ComponentMask target_mask = entity_record->component_mask | component_bit;
   const std::uint32_t destination_archetype_index = GetOrCreateArchetype(target_mask);
+  if (destination_archetype_index == kInvalidArchetypeIndex) {
+    return Core::Status(Core::ErrorCode::kFailedPrecondition,
+                        "Target archetype is unavailable in runtime-sealed mode");
+  }
 
   Archetype& source_archetype = archetypes_[source_archetype_index];
   Archetype& destination_archetype = archetypes_[destination_archetype_index];
-  const size_t destination_row = destination_archetype.Append(entity);
+
+  size_t destination_row = 0;
+  if (!destination_archetype.Append(entity, runtime_sealed_, &destination_row)) {
+    return Core::Status(Core::ErrorCode::kOutOfRange,
+                        "Target archetype capacity exceeded");
+  }
 
   CopySharedComponents(source_archetype, source_row, &destination_archetype,
                        destination_row, entity_record->component_mask);
@@ -249,9 +281,19 @@ Core::Status World::RemoveComponent(EntityId entity) {
   const ComponentMask target_mask = entity_record->component_mask & ~component_bit;
 
   const std::uint32_t destination_archetype_index = GetOrCreateArchetype(target_mask);
+  if (destination_archetype_index == kInvalidArchetypeIndex) {
+    return Core::Status(Core::ErrorCode::kFailedPrecondition,
+                        "Target archetype is unavailable in runtime-sealed mode");
+  }
+
   Archetype& source_archetype = archetypes_[source_archetype_index];
   Archetype& destination_archetype = archetypes_[destination_archetype_index];
-  const size_t destination_row = destination_archetype.Append(entity);
+
+  size_t destination_row = 0;
+  if (!destination_archetype.Append(entity, runtime_sealed_, &destination_row)) {
+    return Core::Status(Core::ErrorCode::kOutOfRange,
+                        "Target archetype capacity exceeded");
+  }
 
   CopySharedComponents(source_archetype, source_row, &destination_archetype,
                        destination_row, target_mask);
@@ -348,6 +390,16 @@ void World::ForEach(Fn&& fn) {
   }
 }
 
+template <typename... Components>
+Core::Status World::ReserveArchetype(size_t entity_capacity) {
+  ComponentMask mask = 0;
+  const Core::Status build_mask_status = BuildMask<Components...>(&mask);
+  if (!build_mask_status.ok()) {
+    return build_mask_status;
+  }
+  return ReserveArchetype(mask, entity_capacity);
+}
+
 template <typename T>
 const void* World::ComponentTypeKey() {
   static int key = 0;
@@ -375,6 +427,30 @@ ComponentTypeIndex World::RequireComponentTypeIndex() const {
     return kInvalidComponentType;
   }
   return component_type;
+}
+
+template <typename... Components>
+Core::Status World::BuildMask(ComponentMask* out_mask) const {
+  if (out_mask == nullptr) {
+    return Core::Status::InvalidArgument("Output mask pointer cannot be null");
+  }
+
+  ComponentMask mask = 0;
+  if constexpr (sizeof...(Components) > 0) {
+    const std::array<ComponentTypeIndex, sizeof...(Components)> component_ids = {
+        RequireComponentTypeIndex<Components>()...};
+
+    for (ComponentTypeIndex component_id : component_ids) {
+      if (component_id == kInvalidComponentType) {
+        return Core::Status(Core::ErrorCode::kFailedPrecondition,
+                            "Component type was not registered");
+      }
+      mask |= ComponentBit(component_id);
+    }
+  }
+
+  *out_mask = mask;
+  return Core::Status::Ok();
 }
 
 template <typename Fn, typename... Components, size_t... I>

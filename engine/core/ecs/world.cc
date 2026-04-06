@@ -5,22 +5,33 @@
 namespace Fabrica::Core::ECS {
 
 World::World(const WorldConfig& config) : config_(config) {
-  entity_records_.reserve(config_.initial_entity_capacity + 1);
+  entity_capacity_limit_ = config_.initial_entity_capacity;
+  entity_records_.reserve(entity_capacity_limit_ + 1);
   entity_records_.push_back(EntityRecord{});
 
   archetypes_.reserve(16);
   archetypes_.push_back(Archetype{});
   archetypes_[0].mask = 0;
-  archetypes_[0].Reserve(config_.initial_archetype_entity_capacity);
+  const size_t root_capacity =
+      std::max(config_.initial_archetype_entity_capacity, config_.initial_entity_capacity);
+  archetypes_[0].Reserve(root_capacity);
   archetype_lookup_.emplace(0, 0);
 }
 
 EntityId World::CreateEntity() {
   std::uint32_t index = 0;
+  bool reused_index = false;
+
   if (!free_entity_indices_.empty()) {
     index = free_entity_indices_.back();
     free_entity_indices_.pop_back();
+    reused_index = true;
   } else {
+    const size_t active_and_dead_entities = entity_records_.size() - 1;
+    if (runtime_sealed_ && active_and_dead_entities >= entity_capacity_limit_) {
+      return EntityId::Invalid();
+    }
+
     index = static_cast<std::uint32_t>(entity_records_.size());
     entity_records_.push_back(EntityRecord{});
   }
@@ -33,7 +44,24 @@ EntityId World::CreateEntity() {
 
   record.component_mask = 0;
   record.archetype_index = 0;
-  const size_t row = archetypes_[0].Append(MakeEntityId(index, record.generation));
+
+  size_t row = 0;
+  if (!archetypes_[0].Append(MakeEntityId(index, record.generation), runtime_sealed_,
+                             &row)) {
+    record.alive = false;
+    record.component_mask = 0;
+    record.archetype_index = 0;
+    record.row_in_archetype = 0;
+
+    if (reused_index) {
+      free_entity_indices_.push_back(index);
+    } else {
+      entity_records_.pop_back();
+    }
+
+    return EntityId::Invalid();
+  }
+
   record.row_in_archetype = static_cast<std::uint32_t>(row);
 
   ++alive_entity_count_;
@@ -70,6 +98,48 @@ bool World::IsAlive(EntityId entity) const {
 
 size_t World::GetArchetypeCount() const { return archetypes_.size(); }
 
+Core::Status World::ReserveEntities(size_t capacity) {
+  if (runtime_sealed_) {
+    return Core::Status(Core::ErrorCode::kFailedPrecondition,
+                        "Cannot reserve entities after runtime seal");
+  }
+
+  if (capacity < alive_entity_count_) {
+    return Core::Status::InvalidArgument(
+        "Entity reserve capacity cannot be smaller than alive entity count");
+  }
+
+  entity_capacity_limit_ = std::max(entity_capacity_limit_, capacity);
+  entity_records_.reserve(entity_capacity_limit_ + 1);
+
+  if (!archetypes_.empty()) {
+    archetypes_[0].Reserve(entity_capacity_limit_);
+  }
+
+  return Core::Status::Ok();
+}
+
+Core::Status World::ReserveArchetype(ComponentMask mask, size_t entity_capacity) {
+  if (runtime_sealed_) {
+    return Core::Status(Core::ErrorCode::kFailedPrecondition,
+                        "Cannot reserve archetypes after runtime seal");
+  }
+
+  const std::uint32_t archetype_index = GetOrCreateArchetype(mask);
+  if (archetype_index == kInvalidArchetypeIndex) {
+    return Core::Status(Core::ErrorCode::kInternal,
+                        "Failed to create archetype");
+  }
+
+  archetypes_[archetype_index].Reserve(entity_capacity);
+  return Core::Status::Ok();
+}
+
+Core::Status World::SealForRuntime() {
+  runtime_sealed_ = true;
+  return Core::Status::Ok();
+}
+
 ComponentMask World::ComponentBit(ComponentTypeIndex component) {
   return static_cast<ComponentMask>(1ull << component);
 }
@@ -92,6 +162,10 @@ std::uint32_t World::GetOrCreateArchetype(ComponentMask mask) {
   const auto existing = archetype_lookup_.find(mask);
   if (existing != archetype_lookup_.end()) {
     return existing->second;
+  }
+
+  if (runtime_sealed_) {
+    return kInvalidArchetypeIndex;
   }
 
   Archetype archetype;
@@ -171,7 +245,8 @@ void World::CopySharedComponents(const Archetype& source_archetype,
     pending_mask &= (pending_mask - 1);
 
     const void* source = source_archetype.At(component_index, source_row);
-    void* destination = destination_archetype->MutableAt(component_index, destination_row);
+    void* destination =
+        destination_archetype->MutableAt(component_index, destination_row);
     const size_t element_size =
         destination_archetype->columns[component_index].element_size;
     std::memcpy(destination, source, element_size);
@@ -191,17 +266,35 @@ const void* World::ComponentAt(const EntityRecord& entity_record,
 }
 
 void World::Archetype::Reserve(size_t entity_capacity) {
-  entities.reserve(entity_capacity);
+  entities.reserve(std::max(entities.capacity(), entity_capacity));
   for (ArchetypeColumn& column : columns) {
     if (!column.active) {
       continue;
     }
-    column.storage.reserve(entity_capacity * column.element_size);
+
+    const size_t requested_bytes = entity_capacity * column.element_size;
+    column.storage.reserve(std::max(column.storage.capacity(), requested_bytes));
   }
 }
 
-size_t World::Archetype::Append(EntityId entity) {
+bool World::Archetype::Append(EntityId entity, bool runtime_sealed, size_t* out_row) {
   const size_t row = entities.size();
+
+  if (runtime_sealed && row >= entities.capacity()) {
+    return false;
+  }
+
+  for (const ArchetypeColumn& column : columns) {
+    if (!column.active) {
+      continue;
+    }
+
+    const size_t required_bytes = (row + 1) * column.element_size;
+    if (runtime_sealed && required_bytes > column.storage.capacity()) {
+      return false;
+    }
+  }
+
   entities.push_back(entity);
 
   for (ArchetypeColumn& column : columns) {
@@ -211,7 +304,10 @@ size_t World::Archetype::Append(EntityId entity) {
     column.storage.resize((row + 1) * column.element_size);
   }
 
-  return row;
+  if (out_row != nullptr) {
+    *out_row = row;
+  }
+  return true;
 }
 
 void World::Archetype::RemoveSwapBack(size_t row, EntityId* moved_entity) {
