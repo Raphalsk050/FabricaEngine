@@ -288,8 +288,17 @@ void Logger::Submit(LogChannel channel, LogLevel level, const char* file, int li
   record.message[record.message.size() - 1] = '\0';
 
   if (queue_ != nullptr) {
-    queue_->Push(record);
-    wake_up_.notify_one();
+    const bool pushed = queue_->Push(record);
+    if (pushed) {
+      wake_up_.notify_one();
+    } else {
+      dropped_records_.fetch_add(1, std::memory_order_relaxed);
+      if (level >= LogLevel::kError) {
+        WriteLine(record.timestamp, record.channel, record.level,
+                  record.thread_id, record.file.data(), record.line,
+                  record.message.data(), record.correlation_id);
+      }
+    }
   }
 
   if (level == LogLevel::kFatal) {

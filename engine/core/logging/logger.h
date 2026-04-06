@@ -61,6 +61,7 @@ class Logger {
   std::atomic<bool> initialized_ = false;
   std::atomic<bool> running_ = false;
   std::atomic<int> min_level_{static_cast<int>(LogLevel::kDebug)};
+  std::atomic<std::uint64_t> dropped_records_ = 0;
   std::array<std::atomic<bool>, kLogChannelCount> enabled_channels_{};
 
   std::thread worker_;
