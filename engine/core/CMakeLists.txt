@@ -93,6 +93,36 @@ target_link_libraries(fabrica_core_window
     fabrica_core_logging
 )
 
+set(FABRICA_GLFW_TARGET "")
+if(FABRICA_ENABLE_GLFW_WINDOW_BACKEND)
+  find_package(glfw3 QUIET CONFIG)
+
+  if(TARGET glfw)
+    set(FABRICA_GLFW_TARGET glfw)
+  elseif(TARGET glfw3::glfw)
+    set(FABRICA_GLFW_TARGET glfw3::glfw)
+  elseif(TARGET glfw3::glfw3)
+    set(FABRICA_GLFW_TARGET glfw3::glfw3)
+  endif()
+endif()
+
+if(FABRICA_GLFW_TARGET)
+  target_compile_definitions(fabrica_core_window
+    PUBLIC
+      FABRICA_USE_GLFW=1
+  )
+
+  target_link_libraries(fabrica_core_window
+    PUBLIC
+      ${FABRICA_GLFW_TARGET}
+  )
+
+  set(FABRICA_GLFW_BACKEND_AVAILABLE ON PARENT_SCOPE)
+else()
+  message(STATUS "GLFW not found or disabled: building window module without GLFW backend")
+  set(FABRICA_GLFW_BACKEND_AVAILABLE OFF PARENT_SCOPE)
+endif()
+
 add_library(fabrica_core_assets
   assets/asset_path.cc
   assets/resource_manager.cc
@@ -111,6 +141,37 @@ target_link_libraries(fabrica_core_assets
     fabrica_core_logging
 )
 
+add_library(fabrica_core_ecs
+  ecs/world.cc
+)
+
+target_include_directories(fabrica_core_ecs
+  PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/..
+)
+
+target_link_libraries(fabrica_core_ecs
+  PUBLIC
+    fabrica_core_common
+)
+
+add_library(fabrica_core_runtime
+  runtime/engine_runtime.cc
+)
+
+target_include_directories(fabrica_core_runtime
+  PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/..
+)
+
+target_link_libraries(fabrica_core_runtime
+  PUBLIC
+    fabrica_core_common
+    fabrica_core_jobs
+    fabrica_core_logging
+    fabrica_core_window
+)
+
 if(FABRICA_BUILD_TESTS)
   add_executable(fabrica_core_tests
     async/future_test.cc
@@ -124,6 +185,8 @@ if(FABRICA_BUILD_TESTS)
     memory/pool_allocator_test.cc
     memory/stack_allocator_test.cc
     assets/resource_manager_test.cc
+    ecs/world_test.cc
+    runtime/engine_runtime_test.cc
     window/event_queue_test.cc
     window/glfw_window_backend_test.cc
     window/window_system_test.cc
@@ -133,10 +196,12 @@ if(FABRICA_BUILD_TESTS)
     PRIVATE
       fabrica_core_common
       fabrica_core_async
+      fabrica_core_assets
+      fabrica_core_ecs
       fabrica_core_jobs
       fabrica_core_logging
       fabrica_core_memory
-      fabrica_core_assets
+      fabrica_core_runtime
       fabrica_core_window
   )
 
