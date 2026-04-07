@@ -94,15 +94,42 @@ target_link_libraries(fabrica_core_window
 )
 
 set(FABRICA_GLFW_TARGET "")
+set(FABRICA_GLFW_BACKEND_SOURCE "none")
+
 if(FABRICA_ENABLE_GLFW_WINDOW_BACKEND)
   find_package(glfw3 QUIET CONFIG)
 
   if(TARGET glfw)
     set(FABRICA_GLFW_TARGET glfw)
+    set(FABRICA_GLFW_BACKEND_SOURCE "system:glfw")
   elseif(TARGET glfw3::glfw)
     set(FABRICA_GLFW_TARGET glfw3::glfw)
+    set(FABRICA_GLFW_BACKEND_SOURCE "system:glfw3::glfw")
   elseif(TARGET glfw3::glfw3)
     set(FABRICA_GLFW_TARGET glfw3::glfw3)
+    set(FABRICA_GLFW_BACKEND_SOURCE "system:glfw3::glfw3")
+  endif()
+
+  if(NOT FABRICA_GLFW_TARGET AND FABRICA_FETCH_GLFW)
+    include(FetchContent)
+
+    set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+    set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+    set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+    set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
+
+    FetchContent_Declare(glfw
+      GIT_REPOSITORY https://github.com/glfw/glfw.git
+      GIT_TAG ${FABRICA_GLFW_FETCH_TAG}
+      GIT_SHALLOW TRUE
+    )
+
+    FetchContent_MakeAvailable(glfw)
+
+    if(TARGET glfw)
+      set(FABRICA_GLFW_TARGET glfw)
+      set(FABRICA_GLFW_BACKEND_SOURCE "fetchcontent:${FABRICA_GLFW_FETCH_TAG}")
+    endif()
   endif()
 endif()
 
@@ -118,9 +145,15 @@ if(FABRICA_GLFW_TARGET)
   )
 
   set(FABRICA_GLFW_BACKEND_AVAILABLE ON PARENT_SCOPE)
+  set(FABRICA_GLFW_BACKEND_SOURCE ${FABRICA_GLFW_BACKEND_SOURCE} PARENT_SCOPE)
 else()
-  message(STATUS "GLFW not found or disabled: building window module without GLFW backend")
+  if(FABRICA_ENABLE_GLFW_WINDOW_BACKEND)
+    message(STATUS "GLFW backend unavailable. Install glfw3 or configure with -DFABRICA_FETCH_GLFW=ON")
+  else()
+    message(STATUS "GLFW backend disabled by FABRICA_ENABLE_GLFW_WINDOW_BACKEND=OFF")
+  endif()
   set(FABRICA_GLFW_BACKEND_AVAILABLE OFF PARENT_SCOPE)
+  set(FABRICA_GLFW_BACKEND_SOURCE "none" PARENT_SCOPE)
 endif()
 
 add_library(fabrica_core_assets

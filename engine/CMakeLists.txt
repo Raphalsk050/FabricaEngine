@@ -8,6 +8,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 option(FABRICA_BUILD_TESTS "Build FabricaEngine unit tests" ON)
 option(FABRICA_BUILD_SAMPLES "Build FabricaEngine sample applications" ON)
 option(FABRICA_ENABLE_GLFW_WINDOW_BACKEND "Enable GLFW-based window backend" ON)
+option(FABRICA_FETCH_GLFW "Fetch GLFW with CMake when no system package is available" OFF)
+set(FABRICA_GLFW_FETCH_TAG "3.4" CACHE STRING "GLFW git tag used when FABRICA_FETCH_GLFW is ON")
 
 if(FABRICA_BUILD_TESTS)
   include(CTest)
@@ -20,6 +22,7 @@ else()
 endif()
 
 set(FABRICA_GLFW_BACKEND_AVAILABLE OFF)
+set(FABRICA_GLFW_BACKEND_SOURCE "none")
 
 add_subdirectory(core)
 add_subdirectory(pal)

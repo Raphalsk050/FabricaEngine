@@ -11,6 +11,9 @@ if(FABRICA_GLFW_BACKEND_AVAILABLE)
       fabrica_core_runtime
       fabrica_core_window
   )
+
+  message(STATUS "fabrica_runtime_sample enabled (GLFW provider: ${FABRICA_GLFW_BACKEND_SOURCE})")
 else()
-  message(STATUS "GLFW not found: skipping fabrica_runtime_sample target")
+  message(STATUS "GLFW backend unavailable: skipping fabrica_runtime_sample target")
+  message(STATUS "To enable sample build: install glfw3 package or configure with -DFABRICA_FETCH_GLFW=ON")
 endif()
