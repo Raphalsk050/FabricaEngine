@@ -29,3 +29,23 @@ cmake --build build --config Debug --target fabrica_runtime_sample
 ```
 
 If the GLFW backend is unavailable, CMake emits explicit guidance on how to enable the sample target.
+
+## Build scripts
+
+Windows (PowerShell):
+```powershell
+.\scripts\build_windows.ps1 -Config Debug
+.\scripts\build_windows.ps1 -Config Debug -BuildSamples -FetchGlfw -Target fabrica_runtime_sample
+```
+
+Windows (batch wrapper):
+```bat
+scripts\build_windows.bat -Config Debug
+```
+
+Linux:
+```bash
+chmod +x scripts/build_linux.sh
+./scripts/build_linux.sh --config Debug
+./scripts/build_linux.sh --config Debug --build-samples --fetch-glfw --target fabrica_runtime_sample
+```
