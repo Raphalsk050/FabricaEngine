@@ -49,3 +49,12 @@ chmod +x scripts/build_linux.sh
 ./scripts/build_linux.sh --config Debug
 ./scripts/build_linux.sh --config Debug --build-samples --fetch-glfw --target fabrica_runtime_sample
 ```
+
+## CLion project generation (Windows)
+
+```powershell
+.\scripts\generate_clion_windows.ps1
+.\scripts\generate_clion_windows.ps1 -Config Debug -BuildDir engine/apps/cmake-build-debug -Build
+```
+
+This script configures with Ninja and exports `compile_commands.json` into paths CLion can consume. Use `-Build` to compile (default target: `fabrica_runtime_sample`). For core-only indexing: `-NoSamples -WithTests`.
