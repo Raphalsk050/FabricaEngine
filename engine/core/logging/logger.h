@@ -24,6 +24,9 @@ struct LoggerConfig {
   std::string file_path = "fabrica.log";
   size_t queue_capacity = 2048;
   LogLevel min_level = LogLevel::kDebug;
+  bool enable_file_sink = true;
+  bool enable_console_sink = true;
+  bool enable_console_colors = true;
 };
 
 class Logger {
@@ -50,7 +53,7 @@ class Logger {
 
   void WorkerLoop();
   void WriteLine(std::chrono::system_clock::time_point timestamp,
-                 LogChannel channel, LogLevel level, std::thread::id thread_id,
+                 LogChannel channel, LogLevel level, std::uint32_t thread_index,
                  const char* file, int line, std::string_view message,
                  std::uint64_t correlation_id);
 
@@ -61,8 +64,11 @@ class Logger {
   std::atomic<bool> initialized_ = false;
   std::atomic<bool> running_ = false;
   std::atomic<int> min_level_{static_cast<int>(LogLevel::kDebug)};
+  std::atomic<bool> console_sink_enabled_{true};
+  std::atomic<bool> console_colors_enabled_{true};
   std::atomic<std::uint64_t> dropped_records_ = 0;
   std::array<std::atomic<bool>, kLogChannelCount> enabled_channels_{};
+  std::uint32_t main_thread_index_ = 0;
 
   std::thread worker_;
   std::ofstream* file_ = nullptr;

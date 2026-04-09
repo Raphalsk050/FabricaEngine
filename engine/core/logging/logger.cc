@@ -6,12 +6,15 @@
 #include <cstring>
 #include <fstream>
 #include <iomanip>
+#include <iostream>
 #include <memory>
 #include <vector>
 
 namespace Fabrica::Core::Logging {
 
 namespace {
+
+constexpr const char* kAnsiReset = "\x1b[0m";
 
 const char* ToString(LogLevel level) {
   switch (level) {
@@ -57,22 +60,65 @@ const char* ToString(LogChannel channel) {
   return "Invalid";
 }
 
+const char* LevelAnsiColor(LogLevel level) {
+  switch (level) {
+    case LogLevel::kDebug:
+      return "\x1b[90m";
+    case LogLevel::kInfo:
+      return "\x1b[32m";
+    case LogLevel::kWarning:
+      return "\x1b[33m";
+    case LogLevel::kError:
+      return "\x1b[31m";
+    case LogLevel::kFatal:
+      return "\x1b[97;41m";
+  }
+  return "";
+}
+
+std::uint32_t AcquireThreadLogIndex() {
+  static std::atomic<std::uint32_t> next_thread_index = 1;
+  thread_local std::uint32_t cached_thread_index = 0;
+
+  if (cached_thread_index == 0) {
+    cached_thread_index =
+        next_thread_index.fetch_add(1, std::memory_order_relaxed);
+  }
+
+  return cached_thread_index;
+}
+
+const char* ShortFileName(const char* path) {
+  if (path == nullptr) {
+    return "";
+  }
+
+  const char* short_name = path;
+  for (const char* current = path; *current != '\0'; ++current) {
+    if (*current == '/' || *current == '\\') {
+      short_name = current + 1;
+    }
+  }
+
+  return short_name;
+}
+
 std::string FormatTimestamp(std::chrono::system_clock::time_point timestamp) {
   using namespace std::chrono;
   const auto millis =
       duration_cast<milliseconds>(timestamp.time_since_epoch()) % 1000;
   const std::time_t time_value = system_clock::to_time_t(timestamp);
 
-  std::tm utc_time{};
+  std::tm local_time{};
 #if defined(_WIN32)
-  gmtime_s(&utc_time, &time_value);
+  localtime_s(&local_time, &time_value);
 #else
-  gmtime_r(&time_value, &utc_time);
+  localtime_r(&time_value, &local_time);
 #endif
 
   std::ostringstream stream;
-  stream << std::put_time(&utc_time, "%Y-%m-%dT%H:%M:%S") << "."
-         << std::setw(3) << std::setfill('0') << millis.count() << "Z";
+  stream << std::put_time(&local_time, "%Y-%m-%d %H:%M:%S") << "."
+         << std::setw(3) << std::setfill('0') << millis.count();
   return stream.str();
 }
 
@@ -90,7 +136,7 @@ struct Logger::LogRecord {
   std::chrono::system_clock::time_point timestamp;
   LogChannel channel = LogChannel::kCore;
   LogLevel level = LogLevel::kInfo;
-  std::thread::id thread_id;
+  std::uint32_t thread_index = 0;
   int line = 0;
   std::uint64_t correlation_id = 0;
   std::array<char, 448> file{};
@@ -194,13 +240,32 @@ Status Logger::Initialize(const LoggerConfig& config) {
     return Status::Ok();
   }
 
-  auto* file = new std::ofstream(config.file_path, std::ios::out | std::ios::trunc);
-  if (!file->is_open()) {
-    delete file;
-    return Status::Internal("Failed to open log file");
+  console_sink_enabled_.store(config.enable_console_sink,
+                              std::memory_order_release);
+  console_colors_enabled_.store(config.enable_console_colors,
+                                std::memory_order_release);
+  main_thread_index_ = AcquireThreadLogIndex();
+
+  if (config.enable_file_sink) {
+    auto* file =
+        new std::ofstream(config.file_path, std::ios::out | std::ios::trunc);
+    if (!file->is_open()) {
+      delete file;
+      file_ = nullptr;
+      if (!config.enable_console_sink) {
+        return Status::Internal("Failed to open log file");
+      }
+    } else {
+      file_ = file;
+    }
+  } else {
+    file_ = nullptr;
   }
 
-  file_ = file;
+  if (file_ == nullptr && !config.enable_console_sink) {
+    return Status::Internal("Logger has no active sinks");
+  }
+
   queue_ = std::make_unique<Queue>(config.queue_capacity);
   min_level_.store(static_cast<int>(config.min_level), std::memory_order_release);
   running_.store(true, std::memory_order_release);
@@ -228,6 +293,7 @@ void Logger::Shutdown() {
     file_ = nullptr;
   }
   queue_.reset();
+  main_thread_index_ = 0;
   initialized_.store(false, std::memory_order_release);
 }
 
@@ -272,7 +338,7 @@ void Logger::Submit(LogChannel channel, LogLevel level, const char* file, int li
   record.timestamp = std::chrono::system_clock::now();
   record.channel = channel;
   record.level = level;
-  record.thread_id = std::this_thread::get_id();
+  record.thread_index = AcquireThreadLogIndex();
   record.line = line;
   record.correlation_id = correlation_id;
 
@@ -295,7 +361,7 @@ void Logger::Submit(LogChannel channel, LogLevel level, const char* file, int li
       dropped_records_.fetch_add(1, std::memory_order_relaxed);
       if (level >= LogLevel::kError) {
         WriteLine(record.timestamp, record.channel, record.level,
-                  record.thread_id, record.file.data(), record.line,
+                  record.thread_index, record.file.data(), record.line,
                   record.message.data(), record.correlation_id);
       }
     }
@@ -318,7 +384,7 @@ void Logger::Flush() {
 
   LogRecord record;
   while (queue_->Pop(&record)) {
-    WriteLine(record.timestamp, record.channel, record.level, record.thread_id,
+    WriteLine(record.timestamp, record.channel, record.level, record.thread_index,
               record.file.data(), record.line, record.message.data(),
               record.correlation_id);
   }
@@ -335,9 +401,9 @@ void Logger::WorkerLoop() {
     LogRecord record;
     while (queue_ != nullptr && queue_->Pop(&record)) {
       consumed_any = true;
-      WriteLine(record.timestamp, record.channel, record.level, record.thread_id,
-                record.file.data(), record.line, record.message.data(),
-                record.correlation_id);
+      WriteLine(record.timestamp, record.channel, record.level,
+                record.thread_index, record.file.data(), record.line,
+                record.message.data(), record.correlation_id);
     }
 
     if (!running_.load(std::memory_order_acquire)) {
@@ -355,24 +421,55 @@ void Logger::WorkerLoop() {
 
 void Logger::WriteLine(std::chrono::system_clock::time_point timestamp,
                        LogChannel channel, LogLevel level,
-                       std::thread::id thread_id, const char* file, int line,
+                       std::uint32_t thread_index, const char* file, int line,
                        std::string_view message, std::uint64_t correlation_id) {
   std::lock_guard<std::mutex> lock(mutex_);
-  if (file_ == nullptr) {
+  if (file_ == nullptr &&
+      !console_sink_enabled_.load(std::memory_order_acquire)) {
     return;
   }
 
-  (*file_) << "[" << FormatTimestamp(timestamp) << "]"
-           << "[" << ToString(level) << "]"
-           << "[" << ToString(channel) << "]"
-           << "[Thread:" << std::hash<std::thread::id>{}(thread_id) << "]"
-           << "[CID:" << correlation_id << "] "
-           << message;
+  const std::string timestamp_text = FormatTimestamp(timestamp);
+  const char* level_text = ToString(level);
+  const char* short_file_name = ShortFileName(file);
 
-  if (file != nullptr && *file != '\0') {
-    (*file_) << " (" << file << ":" << line << ")";
+  std::ostringstream suffix_stream;
+  suffix_stream << " [" << ToString(channel) << "]"
+                << " [" << (thread_index == main_thread_index_ ? "main#" : "thr#")
+                << std::setw(2) << std::setfill('0') << thread_index << "]";
+
+  if (correlation_id != 0) {
+    suffix_stream << " [cid:" << correlation_id << "]";
   }
-  (*file_) << "\n";
+
+  suffix_stream << " " << message;
+
+  if (short_file_name != nullptr && *short_file_name != '\0') {
+    suffix_stream << " (" << short_file_name << ":" << line << ")";
+  }
+
+  const std::string suffix_text = suffix_stream.str();
+
+  std::ostringstream plain_stream;
+  plain_stream << timestamp_text << " [" << level_text << "]" << suffix_text;
+  const std::string plain_line = plain_stream.str();
+
+  if (file_ != nullptr) {
+    (*file_) << plain_line << "\n";
+  }
+
+  if (console_sink_enabled_.load(std::memory_order_acquire)) {
+    std::ostream& console =
+        (level >= LogLevel::kError) ? static_cast<std::ostream&>(std::cerr)
+                                    : static_cast<std::ostream&>(std::cout);
+
+    if (console_colors_enabled_.load(std::memory_order_acquire)) {
+      console << timestamp_text << " " << LevelAnsiColor(level) << "["
+              << level_text << "]" << kAnsiReset << suffix_text << "\n";
+    } else {
+      console << plain_line << "\n";
+    }
+  }
 }
 
 }  // namespace Fabrica::Core::Logging
