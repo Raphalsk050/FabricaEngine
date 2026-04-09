@@ -16,7 +16,7 @@ if(FABRICA_BUILD_TESTS)
 endif()
 
 if(MSVC)
-  add_compile_options(/W4 /permissive-)
+  add_compile_options(/W4 /permissive- /FS)
 else()
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
