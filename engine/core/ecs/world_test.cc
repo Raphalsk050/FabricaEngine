@@ -1,3 +1,5 @@
+#include <cstdint>
+
 #include "core/common/test/test_framework.h"
 #include "core/ecs/world.h"
 
@@ -17,6 +19,10 @@ struct Velocity {
 
 struct Health {
   int value = 0;
+};
+
+struct alignas(64) OverAligned {
+  std::uint64_t payload[8]{};
 };
 
 FABRICA_TEST(ECSWorldRegistersAndReadsComponents) {
@@ -180,4 +186,100 @@ FABRICA_TEST(ECSWorldSealedRuntimeRejectsEntityGrowth) {
   FABRICA_EXPECT_TRUE(!second.IsValid());
 }
 
+FABRICA_TEST(ECSWorldRejectsOverAlignedComponentRegistration) {
+  Fabrica::Core::ECS::World world;
+
+  const Fabrica::Core::Status status = world.RegisterComponent<OverAligned>();
+  FABRICA_EXPECT_TRUE(!status.ok());
+}
+
+FABRICA_TEST(ECSWorldAllowsEntityGrowthBeforeSealWithoutReserve) {
+  Fabrica::Core::ECS::WorldConfig config;
+  config.initial_entity_capacity = 1;
+  config.initial_archetype_entity_capacity = 1;
+
+  Fabrica::Core::ECS::World world(config);
+
+  const auto first = world.CreateEntity();
+  const auto second = world.CreateEntity();
+
+  FABRICA_EXPECT_TRUE(first.IsValid());
+  FABRICA_EXPECT_TRUE(second.IsValid());
+}
+
+FABRICA_TEST(ECSWorldAllowsArchetypeGrowthBeforeSealWithoutReserve) {
+  Fabrica::Core::ECS::WorldConfig config;
+  config.initial_entity_capacity = 2;
+  config.initial_archetype_entity_capacity = 1;
+
+  Fabrica::Core::ECS::World world(config);
+  FABRICA_EXPECT_TRUE(world.RegisterComponent<Transform>().ok());
+
+  const auto first = world.CreateEntity();
+  const auto second = world.CreateEntity();
+  FABRICA_EXPECT_TRUE(first.IsValid());
+  FABRICA_EXPECT_TRUE(second.IsValid());
+
+  FABRICA_EXPECT_TRUE(
+      world.AddComponent(first, Transform{.x = 1.0f, .y = 0.0f, .z = 0.0f}).ok());
+
+  const Fabrica::Core::Status second_add_status =
+      world.AddComponent(second, Transform{.x = 2.0f, .y = 0.0f, .z = 0.0f});
+  FABRICA_EXPECT_TRUE(second_add_status.ok());
+}
+
+
+FABRICA_TEST(ECSWorldEntityHandleAddsAndReadsComponents) {
+  Fabrica::Core::ECS::World world;
+  FABRICA_EXPECT_TRUE(world.RegisterComponent<Transform>().ok());
+
+  auto entity = world.CreateEntityHandle();
+  const Fabrica::Core::Status add_status =
+      entity.AddComponent<Transform>(10.0f, 20.0f, 30.0f);
+
+  FABRICA_EXPECT_TRUE(entity.IsValid());
+  FABRICA_EXPECT_TRUE(add_status.ok());
+  FABRICA_EXPECT_TRUE(entity.HasComponent<Transform>());
+
+  Transform* transform = entity.GetComponent<Transform>();
+  FABRICA_EXPECT_TRUE(transform != nullptr);
+  FABRICA_EXPECT_EQ(transform->x, 10.0f);
+  FABRICA_EXPECT_EQ(transform->y, 20.0f);
+  FABRICA_EXPECT_EQ(transform->z, 30.0f);
+}
+
+FABRICA_TEST(ECSWorldEntityHandleTracksEntityLifetime) {
+  Fabrica::Core::ECS::World world;
+
+  auto entity = world.CreateEntityHandle();
+  FABRICA_EXPECT_TRUE(entity.IsValid());
+  FABRICA_EXPECT_TRUE(entity.Destroy().ok());
+  FABRICA_EXPECT_TRUE(!entity.IsValid());
+}
+
+FABRICA_TEST(ECSWorldConstEntityHandleDisallowsMutation) {
+  Fabrica::Core::ECS::World world;
+  FABRICA_EXPECT_TRUE(world.RegisterComponent<Transform>().ok());
+
+  const auto entity = world.CreateEntity();
+  auto mutable_handle = world.GetEntityHandle(entity);
+  FABRICA_EXPECT_TRUE(mutable_handle.AddComponent<Transform>(1.0f, 2.0f, 3.0f).ok());
+
+  const Fabrica::Core::ECS::World& const_world = world;
+  const auto const_handle = const_world.GetEntityHandle(entity);
+
+  FABRICA_EXPECT_TRUE(const_handle.HasComponent<Transform>());
+  FABRICA_EXPECT_TRUE(const_handle.GetComponentConst<Transform>() != nullptr);
+  FABRICA_EXPECT_TRUE(const_handle.GetComponent<Transform>() == nullptr);
+
+  const Fabrica::Core::Status add_status =
+      const_handle.AddComponent<Transform>(4.0f, 5.0f, 6.0f);
+  const Fabrica::Core::Status remove_status =
+      const_handle.RemoveComponent<Transform>();
+  const Fabrica::Core::Status destroy_status = const_handle.Destroy();
+  FABRICA_EXPECT_TRUE(!add_status.ok());
+  FABRICA_EXPECT_TRUE(!remove_status.ok());
+  FABRICA_EXPECT_TRUE(!destroy_status.ok());
+}
 }  // namespace
+

@@ -24,6 +24,8 @@ using ComponentTypeIndex = std::uint8_t;
 struct EntityIdTag {};
 using EntityId = Core::TypedId<EntityIdTag, std::uint64_t>;
 
+class EntityHandle;
+
 struct WorldConfig {
   size_t initial_entity_capacity = 4096;
   size_t initial_archetype_entity_capacity = 256;
@@ -34,6 +36,9 @@ class World {
   explicit World(const WorldConfig& config = {});
 
   EntityId CreateEntity();
+  EntityHandle CreateEntityHandle();
+  EntityHandle GetEntityHandle(EntityId entity);
+  EntityHandle GetEntityHandle(EntityId entity) const;
   Core::Status DestroyEntity(EntityId entity);
   bool IsAlive(EntityId entity) const;
 
@@ -167,6 +172,46 @@ class World {
   std::unordered_map<ComponentMask, std::uint32_t> archetype_lookup_;
 };
 
+class EntityHandle {
+ public:
+  EntityHandle() = default;
+
+  bool IsValid() const;
+  EntityId Id() const { return entity_; }
+
+  Core::Status Destroy() const;
+
+  template <typename T, typename... Args>
+  Core::Status AddComponent(Args&&... args) const;
+
+  template <typename T>
+  Core::Status RemoveComponent() const;
+
+  template <typename T>
+  bool HasComponent() const;
+
+  template <typename T>
+  T* GetComponent() const;
+
+  template <typename T>
+  const T* GetComponentConst() const;
+
+ private:
+  friend class World;
+
+  EntityHandle(World* world, EntityId entity)
+      : mutable_world_(world), world_(world), entity_(entity) {}
+  EntityHandle(const World* world, EntityId entity)
+      : world_(world), entity_(entity) {}
+
+  Core::Status ValidateBoundWorld() const;
+  Core::Status ValidateMutableWorld() const;
+
+  World* mutable_world_ = nullptr;
+  const World* world_ = nullptr;
+  EntityId entity_ = EntityId::Invalid();
+};
+
 template <typename T>
 Core::Status World::RegisterComponent() {
   static_assert(std::is_trivially_copyable_v<T>,
@@ -174,31 +219,36 @@ Core::Status World::RegisterComponent() {
   static_assert(std::is_trivially_destructible_v<T>,
                 "ECS components must be trivially destructible");
 
-  if (runtime_sealed_) {
+  if constexpr (alignof(T) > alignof(std::max_align_t)) {
     return Core::Status(Core::ErrorCode::kFailedPrecondition,
-                        "Cannot register components after runtime seal");
-  }
+                        "Component alignment exceeds ECS storage guarantee");
+  } else {
+    if (runtime_sealed_) {
+      return Core::Status(Core::ErrorCode::kFailedPrecondition,
+                          "Cannot register components after runtime seal");
+    }
 
-  const void* component_key = ComponentTypeKey<T>();
-  if (component_type_lookup_.contains(component_key)) {
+    const void* component_key = ComponentTypeKey<T>();
+    if (component_type_lookup_.contains(component_key)) {
+      return Core::Status::Ok();
+    }
+
+    if (next_component_type_ >= kMaxComponentTypes) {
+      return Core::Status(Core::ErrorCode::kOutOfRange,
+                          "Maximum component type count reached");
+    }
+
+    const ComponentTypeIndex component_type = next_component_type_;
+    ++next_component_type_;
+
+    component_type_lookup_.emplace(component_key, component_type);
+    component_infos_[component_type] = ComponentInfo{
+        .size = sizeof(T),
+        .alignment = alignof(T),
+        .debug_name = typeid(T).name(),
+        .registered = true};
     return Core::Status::Ok();
   }
-
-  if (next_component_type_ >= kMaxComponentTypes) {
-    return Core::Status(Core::ErrorCode::kOutOfRange,
-                        "Maximum component type count reached");
-  }
-
-  const ComponentTypeIndex component_type = next_component_type_;
-  ++next_component_type_;
-
-  component_type_lookup_.emplace(component_key, component_type);
-  component_infos_[component_type] = ComponentInfo{
-      .size = sizeof(T),
-      .alignment = alignof(T),
-      .debug_name = typeid(T).name(),
-      .registered = true};
-  return Core::Status::Ok();
 }
 
 template <typename T>
@@ -467,5 +517,75 @@ void World::InvokeForEach(
   }
 }
 
-}  // namespace Fabrica::Core::ECS
 
+inline bool EntityHandle::IsValid() const {
+  return world_ != nullptr && entity_.IsValid() && world_->IsAlive(entity_);
+}
+
+inline Core::Status EntityHandle::ValidateBoundWorld() const {
+  if (world_ == nullptr) {
+    return Core::Status(Core::ErrorCode::kFailedPrecondition,
+                        "Entity handle is not attached to a world");
+  }
+  return Core::Status::Ok();
+}
+
+inline Core::Status EntityHandle::ValidateMutableWorld() const {
+  if (mutable_world_ == nullptr) {
+    return Core::Status(Core::ErrorCode::kFailedPrecondition,
+                        "Entity handle is read-only for const world access");
+  }
+  return Core::Status::Ok();
+}
+
+inline Core::Status EntityHandle::Destroy() const {
+  const Core::Status status = ValidateMutableWorld();
+  if (!status.ok()) {
+    return status;
+  }
+  return mutable_world_->DestroyEntity(entity_);
+}
+
+template <typename T, typename... Args>
+Core::Status EntityHandle::AddComponent(Args&&... args) const {
+  const Core::Status status = ValidateMutableWorld();
+  if (!status.ok()) {
+    return status;
+  }
+  return mutable_world_->AddComponent(entity_, T{std::forward<Args>(args)...});
+}
+
+template <typename T>
+Core::Status EntityHandle::RemoveComponent() const {
+  const Core::Status status = ValidateMutableWorld();
+  if (!status.ok()) {
+    return status;
+  }
+  return mutable_world_->RemoveComponent<T>(entity_);
+}
+
+template <typename T>
+bool EntityHandle::HasComponent() const {
+  if (world_ == nullptr) {
+    return false;
+  }
+  return world_->HasComponent<T>(entity_);
+}
+
+template <typename T>
+T* EntityHandle::GetComponent() const {
+  if (mutable_world_ == nullptr) {
+    return nullptr;
+  }
+  return mutable_world_->GetComponent<T>(entity_);
+}
+
+template <typename T>
+const T* EntityHandle::GetComponentConst() const {
+  if (world_ == nullptr) {
+    return nullptr;
+  }
+  return world_->GetComponent<T>(entity_);
+}
+
+}  // namespace Fabrica::Core::ECS

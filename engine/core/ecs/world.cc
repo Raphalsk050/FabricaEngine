@@ -7,6 +7,7 @@ namespace Fabrica::Core::ECS {
 World::World(const WorldConfig& config) : config_(config) {
   entity_capacity_limit_ = config_.initial_entity_capacity;
   entity_records_.reserve(entity_capacity_limit_ + 1);
+  free_entity_indices_.reserve(entity_capacity_limit_);
   entity_records_.push_back(EntityRecord{});
 
   archetypes_.reserve(16);
@@ -67,6 +68,18 @@ EntityId World::CreateEntity() {
   return MakeEntityId(index, record.generation);
 }
 
+EntityHandle World::CreateEntityHandle() {
+  return EntityHandle(this, CreateEntity());
+}
+
+EntityHandle World::GetEntityHandle(EntityId entity) {
+  return EntityHandle(this, entity);
+}
+
+EntityHandle World::GetEntityHandle(EntityId entity) const {
+  return EntityHandle(this, entity);
+}
+
 Core::Status World::DestroyEntity(EntityId entity) {
   EntityRecord* record = GetEntityRecord(entity);
   if (record == nullptr) {
@@ -110,6 +123,7 @@ Core::Status World::ReserveEntities(size_t capacity) {
 
   entity_capacity_limit_ = capacity;
   entity_records_.reserve(entity_capacity_limit_ + 1);
+  free_entity_indices_.reserve(entity_capacity_limit_);
 
   if (!archetypes_.empty()) {
     archetypes_[0].Reserve(entity_capacity_limit_);
@@ -143,6 +157,8 @@ Core::Status World::SealForRuntime() {
     archetype.entity_limit =
         std::max(archetype.entity_limit, archetype.entities.size());
   }
+
+  free_entity_indices_.reserve(entity_capacity_limit_);
 
   runtime_sealed_ = true;
   return Core::Status::Ok();
@@ -291,7 +307,7 @@ void World::Archetype::Reserve(size_t entity_capacity) {
 bool World::Archetype::Append(EntityId entity, bool runtime_sealed, size_t* out_row) {
   const size_t row = entities.size();
 
-  if (runtime_sealed && row >= entity_limit) {
+  if (runtime_sealed && (row >= entity_limit || row >= entities.capacity())) {
     return false;
   }
 
@@ -381,3 +397,6 @@ const void* World::Archetype::At(ComponentTypeIndex component, size_t row) const
 }
 
 }  // namespace Fabrica::Core::ECS
+
+
+
