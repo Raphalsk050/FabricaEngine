@@ -1,8 +1,9 @@
 # FabricaEngine
 
 Initial engine architecture focused on DOD/ECS, including:
-- Core (`common`, `memory`, `logging`, `jobs`, `async`, `window`, `assets`, `ecs`, `runtime`)
+- Core (`common`, `memory`, `logging`, `jobs`, `async`, `window`, `assets`, `ecs`, `runtime`, `app`)
 - PAL (`threading`, `file_system`)
+- Samples (`engine/samples`, one target per subsystem)
 
 ## Build + tests
 
@@ -13,11 +14,9 @@ cmake --build build --config Debug
 ctest --test-dir build -C Debug --output-on-failure
 ```
 
-## Runtime sample (GLFW)
+## Samples
 
-The runtime sample uses the GLFW backend and can be resolved in two ways:
-- system package (`find_package(glfw3 CONFIG)`)
-- CMake download (`FetchContent`) with `-DFABRICA_FETCH_GLFW=ON`
+The sample suite lives in `engine/samples` and covers every engine subsystem.
 
 ```bash
 cd engine
@@ -25,10 +24,27 @@ cmake -S . -B build \
   -DFABRICA_BUILD_SAMPLES=ON \
   -DFABRICA_ENABLE_GLFW_WINDOW_BACKEND=ON \
   -DFABRICA_FETCH_GLFW=ON
-cmake --build build --config Debug --target fabrica_runtime_sample
+cmake --build build --config Debug
 ```
 
-If the GLFW backend is unavailable, CMake emits explicit guidance on how to enable the sample target.
+Core sample targets:
+- `fabrica_common_sample`
+- `fabrica_memory_sample`
+- `fabrica_logging_sample`
+- `fabrica_jobs_sample`
+- `fabrica_async_sample`
+- `fabrica_assets_sample`
+- `fabrica_ecs_sample`
+- `fabrica_input_sample`
+- `fabrica_window_sample`
+- `fabrica_runtime_headless_sample`
+- `fabrica_view_application_sample`
+- `fabrica_pal_sample`
+
+GLFW-dependent sample target:
+- `fabrica_runtime_sample`
+
+If the GLFW backend is unavailable, CMake emits explicit guidance on enabling the target.
 
 ## View entry point (recommended)
 
@@ -88,9 +104,7 @@ chmod +x scripts/build_linux.sh
 
 ```powershell
 .\scripts\generate_clion_windows.ps1
-.\scripts\generate_clion_windows.ps1 -Config Debug -BuildDir engine/apps/cmake-build-debug -Build
+.\scripts\generate_clion_windows.ps1 -Config Debug -BuildDir engine/samples/cmake-build-debug -Build
 ```
 
 This script configures with Ninja and exports `compile_commands.json` into paths CLion can consume. Use `-Build` to compile (default target: `fabrica_runtime_sample`). For core-only indexing: `-NoSamples -WithTests`.
-
-

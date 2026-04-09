@@ -28,5 +28,6 @@ add_subdirectory(core)
 add_subdirectory(pal)
 
 if(FABRICA_BUILD_SAMPLES)
-  add_subdirectory(apps)
+  add_subdirectory(samples)
 endif()
+

@@ -1,7 +1,7 @@
 param(
   [ValidateSet("Debug", "Release", "RelWithDebInfo", "MinSizeRel")]
   [string]$Config = "Debug",
-  [string]$BuildDir = "engine/apps/cmake-build-debug",
+  [string]$BuildDir = "engine/samples/cmake-build-debug",
   [string]$NinjaPath = "",
   [switch]$NoSamples,
   [switch]$WithTests,
