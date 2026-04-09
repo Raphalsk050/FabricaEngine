@@ -395,6 +395,9 @@ class Future {
                                  Core::Invocable<void()> task,
                                  int priority = Jobs::kNormalTaskPriority) {
     Jobs::Executor* executor = Jobs::Executor::Get(executor_type);
+    if (executor == nullptr && executor_type != Jobs::Executor::Type::kImmediate) {
+      executor = Jobs::Executor::Get(Jobs::Executor::Type::kImmediate);
+    }
     if (executor == nullptr) {
       impl->Return(Internal::ResultHolder(
           FromStatus(Core::Status::Unavailable("Executor not configured"))));
@@ -545,3 +548,4 @@ WeakFuture<T> MakeWeak(Future<T> future) {
 }
 
 }  // namespace Fabrica::Core::Async
+

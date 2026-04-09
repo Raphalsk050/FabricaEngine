@@ -6,6 +6,7 @@
 
 #include "core/common/invocable.h"
 #include "core/common/status.h"
+#include "core/logging/logger.h"
 #include "core/jobs/simple_foreground_executor.h"
 #include "core/jobs/thread_pool_executor.h"
 #include "core/window/iwindow_backend.h"
@@ -32,6 +33,9 @@ struct RuntimeConfig {
   std::unique_ptr<Window::IWindowBackend> window_backend;
   RuntimeCallbacks callbacks;
   Jobs::ThreadPoolExecutor::Options background_executor_options{};
+  Logging::LoggerConfig logger_config{};
+  bool initialize_logger = true;
+  bool shutdown_logger_on_exit = true;
   bool pump_foreground_until_empty = true;
 };
 
@@ -67,6 +71,7 @@ class EngineRuntime {
   bool stop_requested_ = false;
   bool pump_foreground_until_empty_ = true;
   bool allow_stop_callback_ = false;
+  bool shutdown_logger_on_exit_ = true;
 
   std::uint64_t frame_index_ = 0;
   std::chrono::steady_clock::time_point last_tick_timestamp_{};

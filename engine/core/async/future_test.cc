@@ -85,5 +85,20 @@ FABRICA_TEST(FutureRunsInThreadPoolBackground) {
   FABRICA_EXPECT_EQ(background_future.Get().value(), 42);
 }
 
-}  // namespace
 
+FABRICA_TEST(FutureFallsBackToImmediateExecutorWhenNotConfigured) {
+  Executor::SetForegroundExecutor(nullptr);
+  Executor::SetBackgroundExecutor(nullptr);
+
+  auto future = Future<int>::Schedule([]() { return 11; },
+                                      Executor::Type::kForeground);
+  FABRICA_EXPECT_TRUE(future.Ready());
+  FABRICA_EXPECT_EQ(future.Get().value(), 11);
+
+  auto chained = future.Then([](int value) { return value + 1; },
+                             Executor::Type::kBackground);
+  FABRICA_EXPECT_TRUE(chained.Ready());
+  FABRICA_EXPECT_EQ(chained.Get().value(), 12);
+}
+
+}  // namespace

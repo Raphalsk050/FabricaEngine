@@ -19,6 +19,16 @@ Core::Status EngineRuntime::Initialize(RuntimeConfig config) {
     return Core::Status::InvalidArgument("Runtime requires a window backend");
   }
 
+  shutdown_logger_on_exit_ = config.shutdown_logger_on_exit;
+  if (config.initialize_logger) {
+    const Core::Status logger_status =
+        Logging::Logger::Instance().Initialize(config.logger_config);
+    if (!logger_status.ok()) {
+      last_error_ = logger_status;
+      return logger_status;
+    }
+  }
+
   callbacks_ = std::move(config.callbacks);
   Window::WindowConfig resolved_window_config = std::move(config.window_config);
 
@@ -26,6 +36,9 @@ Core::Status EngineRuntime::Initialize(RuntimeConfig config) {
     Core::Status configure_status = callbacks_.configure(resolved_window_config);
     if (!configure_status.ok()) {
       last_error_ = configure_status;
+      if (shutdown_logger_on_exit_) {
+        Logging::Logger::Instance().Shutdown();
+      }
       return configure_status;
     }
   }
@@ -179,6 +192,10 @@ void EngineRuntime::Shutdown() {
   stop_requested_ = false;
   allow_stop_callback_ = false;
   state_ = RuntimeState::kStopped;
+
+  if (shutdown_logger_on_exit_) {
+    Logging::Logger::Instance().Shutdown();
+  }
 }
 
 Core::Status EngineRuntime::DispatchWindowEvents() {
@@ -225,3 +242,5 @@ Core::Status EngineRuntime::AdvanceFrame() {
 }
 
 }  // namespace Fabrica::Core::Runtime
+
+
