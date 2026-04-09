@@ -32,11 +32,7 @@ if(FABRICA_GLFW_BACKEND_AVAILABLE)
 
   target_link_libraries(fabrica_runtime_sample
     PRIVATE
-      fabrica_core_common
-      fabrica_core_jobs
-      fabrica_core_logging
-      fabrica_core_runtime
-      fabrica_core_window
+      fabrica_core_app
   )
 
   message(STATUS "fabrica_runtime_sample enabled (GLFW provider: ${FABRICA_GLFW_BACKEND_SOURCE})")

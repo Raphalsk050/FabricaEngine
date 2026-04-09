@@ -156,6 +156,21 @@ else()
   set(FABRICA_GLFW_BACKEND_SOURCE "none" PARENT_SCOPE)
 endif()
 
+add_library(fabrica_core_input
+  input/input_action_map.cc
+)
+
+target_include_directories(fabrica_core_input
+  PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/..
+)
+
+target_link_libraries(fabrica_core_input
+  PUBLIC
+    fabrica_core_common
+    fabrica_core_window
+)
+
 add_library(fabrica_core_assets
   assets/asset_path.cc
   assets/resource_manager.cc
@@ -205,6 +220,24 @@ target_link_libraries(fabrica_core_runtime
     fabrica_core_window
 )
 
+add_library(fabrica_core_app
+  app/view_application.cc
+)
+
+target_include_directories(fabrica_core_app
+  PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/..
+)
+
+target_link_libraries(fabrica_core_app
+  PUBLIC
+    fabrica_core_async
+    fabrica_core_common
+    fabrica_core_ecs
+    fabrica_core_input
+    fabrica_core_runtime
+)
+
 if(FABRICA_BUILD_TESTS)
   add_executable(fabrica_core_tests
     async/future_test.cc
@@ -218,6 +251,8 @@ if(FABRICA_BUILD_TESTS)
     memory/pool_allocator_test.cc
     memory/stack_allocator_test.cc
     assets/resource_manager_test.cc
+    input/input_action_map_test.cc
+    app/view_application_test.cc
     ecs/world_test.cc
     runtime/engine_runtime_test.cc
     window/event_queue_test.cc
@@ -231,6 +266,8 @@ if(FABRICA_BUILD_TESTS)
       fabrica_core_async
       fabrica_core_assets
       fabrica_core_ecs
+      fabrica_core_input
+      fabrica_core_app
       fabrica_core_jobs
       fabrica_core_logging
       fabrica_core_memory
@@ -240,3 +277,7 @@ if(FABRICA_BUILD_TESTS)
 
   add_test(NAME fabrica_core_tests COMMAND fabrica_core_tests)
 endif()
+
+
+
+

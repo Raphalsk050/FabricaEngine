@@ -30,6 +30,40 @@ cmake --build build --config Debug --target fabrica_runtime_sample
 
 If the GLFW backend is unavailable, CMake emits explicit guidance on how to enable the sample target.
 
+## View entry point (recommended)
+
+Use `core/app/fabrica.h` to build applications with a lifecycle-oriented view API instead of manual runtime callback wiring.
+
+```cpp
+#include "core/app/fabrica.h"
+
+struct PlayerComponent {
+  float speed = 0.0f;
+};
+
+class MyView final : public Fabrica::Engine::BaseView {
+ public:
+  Status Awake() override {
+    RegisterComponent<PlayerComponent>();
+    auto player = CreateEntity();
+    player.AddComponent<PlayerComponent>(6.0f);
+    BindInputAction("quit", 256);
+    BindInputAction("quit", 81);
+    return Status::Ok();
+  }
+
+  void OnInputAction(const InputActionEvent& event) override {
+    if (event.action == "quit" && event.phase == InputActionPhase::kStarted) {
+      RequestStop();
+    }
+  }
+};
+
+FABRICA_DEFINE_VIEW_MAIN(MyView)
+```
+
+This flow also avoids explicit logger bootstrap calls in app code (`Logger::Instance().Initialize()`), because runtime now manages logger startup by default.
+
 ## Build scripts
 
 Windows (PowerShell):
@@ -58,3 +92,5 @@ chmod +x scripts/build_linux.sh
 ```
 
 This script configures with Ninja and exports `compile_commands.json` into paths CLion can consume. Use `-Build` to compile (default target: `fabrica_runtime_sample`). For core-only indexing: `-NoSamples -WithTests`.
+
+

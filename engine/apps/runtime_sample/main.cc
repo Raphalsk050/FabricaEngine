@@ -1,64 +1,76 @@
-#include <cstdlib>
-
+#include "core/app/fabrica.h"
 #include "core/logging/logger.h"
-#include "core/runtime/engine_runtime.h"
-#include "core/window/glfw_window_backend.h"
 
-int main() {
-  Fabrica::Core::Logging::Logger::Instance().Initialize();
+namespace {
 
-  Fabrica::Core::Runtime::RuntimeConfig config;
-  config.window_config.width = 1280;
-  config.window_config.height = 720;
-  config.window_config.title = "FabricaEngine Runtime Sample";
-  config.window_backend = std::make_unique<Fabrica::Core::Window::GlfwWindowBackend>();
+constexpr int kKeyEscape = 256;
+constexpr int kKeyQUppercase = 81;
 
-  config.callbacks.start = Fabrica::Core::Invocable<Fabrica::Core::Status()>([]() {
-    FABRICA_LOG(Game, Info) << "[Game] Runtime sample started";
-    return Fabrica::Core::Status::Ok();
-  });
+struct PlayerController {
+  float move_speed = 0.0f;
+};
 
-  config.callbacks.update =
-      Fabrica::Core::Invocable<Fabrica::Core::Status(const Fabrica::Core::Runtime::FrameContext&)>(
-          [](const Fabrica::Core::Runtime::FrameContext&) {
-            return Fabrica::Core::Status::Ok();
-          });
-
-  config.callbacks.render =
-      Fabrica::Core::Invocable<Fabrica::Core::Status(const Fabrica::Core::Runtime::FrameContext&)>(
-          [](const Fabrica::Core::Runtime::FrameContext&) {
-            return Fabrica::Core::Status::Ok();
-          });
-
-  config.callbacks.on_event =
-      Fabrica::Core::Invocable<void(const Fabrica::Core::Window::WindowEvent&)>(
-          [](const Fabrica::Core::Window::WindowEvent& event) {
-            if (event.type == Fabrica::Core::Window::WindowEventType::kWindowResize) {
-              FABRICA_LOG(Window, Info)
-                  << "[Window] Resize " << event.resize.width << "x"
-                  << event.resize.height;
-            }
-          });
-
-  config.callbacks.stop = Fabrica::Core::Invocable<void()>([]() {
-    FABRICA_LOG(Game, Info) << "[Game] Runtime sample stopped";
-  });
-
-  Fabrica::Core::Runtime::EngineRuntime runtime;
-  const Fabrica::Core::Status initialize_status = runtime.Initialize(std::move(config));
-  if (!initialize_status.ok()) {
-    FABRICA_LOG(Game, Error)
-        << "[Game] Failed to initialize runtime: " << initialize_status.ToString();
-    Fabrica::Core::Logging::Logger::Instance().Shutdown();
-    return EXIT_FAILURE;
+class RuntimeSampleView final : public Fabrica::Engine::BaseView {
+ public:
+  Status ConfigureWindow(WindowConfig& config) override {
+    config.width = 1280;
+    config.height = 720;
+    config.title = "FabricaEngine Runtime View Sample";
+    return Status::Ok();
   }
 
-  const Fabrica::Core::Status run_status = runtime.Run();
-  if (!run_status.ok()) {
-    FABRICA_LOG(Game, Error) << "[Game] Runtime ended with error: "
-                             << run_status.ToString();
+  Status Awake() override {
+    FABRICA_LOG(Game, Info) << "[Game] Runtime sample view awake";
+
+    const Status register_status = RegisterComponent<PlayerController>();
+    if (!register_status.ok()) {
+      return register_status;
+    }
+
+    player_entity_ = CreateEntity();
+    const Status add_component_status =
+        player_entity_.AddComponent<PlayerController>(6.5f);
+    if (!add_component_status.ok()) {
+      return add_component_status;
+    }
+
+    const Status bind_escape_status = BindInputAction("quit", kKeyEscape);
+    if (!bind_escape_status.ok()) {
+      return bind_escape_status;
+    }
+
+    const Status bind_q_status = BindInputAction("quit", kKeyQUppercase);
+    if (!bind_q_status.ok()) {
+      return bind_q_status;
+    }
+
+    return Status::Ok();
   }
 
-  Fabrica::Core::Logging::Logger::Instance().Shutdown();
-  return run_status.ok() ? EXIT_SUCCESS : EXIT_FAILURE;
-}
+  Status Start() override {
+    FABRICA_LOG(Game, Info) << "[Game] Runtime sample view started";
+    return Status::Ok();
+  }
+
+  Status Update(const FrameContext&) override {
+    FABRICA_LOG(Game, Info) << "[Game] Runtime sample view update";
+    return Status::Ok(); }
+
+  void OnInputAction(const InputActionEvent& event) override {
+    if (event.action == "quit" && event.phase == InputActionPhase::kStarted) {
+      FABRICA_LOG(Game, Info) << "[Game] Quit action received";
+      RequestStop();
+    }
+  }
+
+  void Shutdown() override {
+    FABRICA_LOG(Game, Info) << "[Game] Runtime sample view shutdown";
+  }
+
+ private:
+  EntityHandle player_entity_;
+};
+
+}  // namespace
+
+FABRICA_DEFINE_VIEW_MAIN(RuntimeSampleView)
