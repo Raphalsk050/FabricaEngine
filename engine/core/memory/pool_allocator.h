@@ -9,9 +9,20 @@
 
 namespace Fabrica::Core::Memory {
 
+/**
+ * Allocates fixed-size slots for objects of one type.
+ *
+ * The allocator owns a contiguous slot array and keeps a free-list index stack.
+ * Allocation constructs objects in-place; deallocation destroys and returns the
+ * slot to the free list.
+ *
+ * @tparam T Object type stored in each slot.
+ * @tparam BlockSize Reserved for future block sizing policy checks.
+ */
 template <typename T, size_t BlockSize = 4096>
 class PoolAllocator {
  public:
+  /// Create a pool with a fixed number of slots.
   explicit PoolAllocator(size_t initial_capacity)
       : slots_(initial_capacity) {
     static_assert(BlockSize > 0);
@@ -32,6 +43,11 @@ class PoolAllocator {
     }
   }
 
+  /**
+   * Construct one object in a free slot.
+   *
+   * @return Pointer to constructed object, or null when pool is full.
+   */
   template <typename... Args>
   T* Allocate(Args&&... args) {
     if (free_head_ == kInvalidIndex) {
@@ -47,6 +63,11 @@ class PoolAllocator {
     return new (&slot.storage) T(std::forward<Args>(args)...);
   }
 
+  /**
+   * Destroy one object and return its slot to the free list.
+   *
+   * Invalid pointers are ignored to preserve crash-free teardown paths.
+   */
   void Deallocate(T* ptr) {
     if (ptr == nullptr) {
       return;
@@ -75,7 +96,10 @@ class PoolAllocator {
     ++free_count_;
   }
 
+  /// Return number of currently available free slots.
   size_t GetFreeCount() const { return free_count_; }
+
+  /// Return total slot count managed by this pool.
   size_t GetTotalCount() const { return slots_.size(); }
 
  private:

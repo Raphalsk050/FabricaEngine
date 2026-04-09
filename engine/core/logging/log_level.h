@@ -2,6 +2,9 @@
 
 namespace Fabrica::Core::Logging {
 
+/**
+ * Defines log severity levels in ascending order.
+ */
 enum class LogLevel : int {
   kDebug = 0,
   kInfo = 1,
@@ -11,4 +14,3 @@ enum class LogLevel : int {
 };
 
 }  // namespace Fabrica::Core::Logging
-

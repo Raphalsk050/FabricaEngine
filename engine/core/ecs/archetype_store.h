@@ -16,20 +16,35 @@
 
 namespace Fabrica::Core::ECS {
 
+/**
+ * Stores archetypes and columnar component data for ECS entities.
+ *
+ * Archetypes are indexed by component mask. Each active column is a tightly
+ * packed byte array sized by component metadata from `ComponentRegistry`.
+ */
 class ArchetypeStore {
  public:
+  /**
+   * Holds one component column inside an archetype.
+   */
   struct ArchetypeColumn {
     bool active = false;
     size_t element_size = 0;
     std::vector<std::byte> storage;
   };
 
+  /**
+   * Represents one archetype bucket keyed by component mask.
+   */
   struct Archetype {
     ComponentMask mask = 0;
     size_t entity_limit = 0;
     std::vector<EntityId> entities;
     std::array<ArchetypeColumn, kMaxComponentTypes> columns{};
 
+    /**
+     * Reserve capacity for entity rows and active columns.
+     */
     void Reserve(size_t entity_capacity) {
       const size_t resolved_capacity = std::max(entity_capacity, entities.size());
       entity_limit = resolved_capacity;
@@ -45,6 +60,11 @@ class ArchetypeStore {
       }
     }
 
+    /**
+     * Append one entity row.
+     *
+     * @return True when append succeeds under current capacity policy.
+     */
     bool Append(EntityId entity, bool runtime_sealed, size_t* out_row) {
       const size_t row = entities.size();
 
@@ -82,6 +102,9 @@ class ArchetypeStore {
       return true;
     }
 
+    /**
+     * Remove row by swap-back and return moved entity id when applicable.
+     */
     void RemoveSwapBack(size_t row, EntityId* moved_entity) {
       if (entities.empty()) {
         if (moved_entity != nullptr) {
@@ -127,11 +150,13 @@ class ArchetypeStore {
       }
     }
 
+    /// Return mutable pointer to component storage at [component,row].
     void* MutableAt(ComponentTypeIndex component, size_t row) {
       ArchetypeColumn& column = columns[component];
       return column.storage.data() + (row * column.element_size);
     }
 
+    /// Return const pointer to component storage at [component,row].
     const void* At(ComponentTypeIndex component, size_t row) const {
       const ArchetypeColumn& column = columns[component];
       return column.storage.data() + (row * column.element_size);
@@ -141,6 +166,9 @@ class ArchetypeStore {
   static constexpr std::uint32_t kInvalidArchetypeIndex =
       std::numeric_limits<std::uint32_t>::max();
 
+  /**
+   * Build store with root archetype (empty component mask).
+   */
   ArchetypeStore(size_t initial_archetype_entity_capacity, size_t initial_entity_capacity)
       : initial_archetype_entity_capacity_(initial_archetype_entity_capacity) {
     archetypes_.reserve(16);
@@ -164,6 +192,9 @@ class ArchetypeStore {
   std::vector<Archetype>& MutableArchetypes() { return archetypes_; }
   const std::vector<Archetype>& Archetypes() const { return archetypes_; }
 
+  /**
+   * Pre-reserve capacity for one archetype mask.
+   */
   Core::Status ReserveArchetype(ComponentMask mask, size_t entity_capacity,
                                 bool runtime_sealed,
                                 const ComponentRegistry& component_registry) {
@@ -183,6 +214,9 @@ class ArchetypeStore {
     return Core::Status::Ok();
   }
 
+  /**
+   * Resolve or create archetype index for a component mask.
+   */
   std::uint32_t GetOrCreateArchetype(ComponentMask mask, bool runtime_sealed,
                                      const ComponentRegistry& component_registry) {
     const auto existing = archetype_lookup_.find(mask);
@@ -220,16 +254,21 @@ class ArchetypeStore {
     return new_index;
   }
 
+  /// Freeze archetype capacity limits for runtime mode.
   void SealForRuntime() {
     for (Archetype& archetype : archetypes_) {
       archetype.entity_limit = std::max(archetype.entity_limit, archetype.entities.size());
     }
   }
 
+  /// Remove one row from selected archetype with swap-back semantics.
   void RemoveRow(std::uint32_t archetype_index, size_t row, EntityId* moved_entity) {
     archetypes_[archetype_index].RemoveSwapBack(row, moved_entity);
   }
 
+  /**
+   * Copy columns present in both source and destination masks.
+   */
   void CopySharedComponents(const Archetype& source_archetype, size_t source_row,
                             Archetype* destination_archetype,
                             size_t destination_row,

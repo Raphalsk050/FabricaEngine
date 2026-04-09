@@ -9,17 +9,35 @@
 
 namespace Fabrica::Core::Test {
 
+/**
+ * Collects and executes registered test cases for lightweight unit tests.
+ *
+ * Registration follows an Observer-like pattern through static `Registrar`
+ * instances created by macros.
+ */
 class Registry {
  public:
+  /// Return the process-wide registry singleton.
   static Registry& Instance() {
     static Registry instance;
     return instance;
   }
 
+  /**
+   * Register a named test callback.
+   *
+   * @param name Test case label shown in diagnostics.
+   * @param fn Test function to execute.
+   */
   void Add(std::string name, std::function<void()> fn) {
     tests_.push_back({std::move(name), std::move(fn)});
   }
 
+  /**
+   * Execute all registered tests and return failure count.
+   *
+   * @return Total number of failed tests/checks.
+   */
   int RunAll() {
     int failures = 0;
     for (const auto& test : tests_) {
@@ -46,6 +64,14 @@ class Registry {
     return failures;
   }
 
+  /**
+   * Record a failed expectation emitted by assertion macros.
+   *
+   * @param expression Original check expression text.
+   * @param file Source file containing the failed check.
+   * @param line Source line containing the failed check.
+   * @param message Optional diagnostic details.
+   */
   void FailCheck(const char* expression, const char* file, int line,
                  const std::string& message) {
     ++failed_checks_;
@@ -68,6 +94,9 @@ class Registry {
   int failed_checks_ = 0;
 };
 
+/**
+ * Registers one test function in the global `Registry` at static init time.
+ */
 class Registrar {
  public:
   Registrar(std::string name, std::function<void()> fn) {
@@ -77,12 +106,18 @@ class Registrar {
 
 }  // namespace Fabrica::Core::Test
 
+/**
+ * Declare and register a test function.
+ */
 #define FABRICA_TEST(name)                                                   \
   static void name();                                                        \
   static ::Fabrica::Core::Test::Registrar name##_registrar_instance(#name,  \
                                                                      &name); \
   static void name()
 
+/**
+ * Assert that an expression evaluates to true.
+ */
 #define FABRICA_EXPECT_TRUE(expression)                                        \
   do {                                                                         \
     if (!(expression)) {                                                       \
@@ -92,6 +127,9 @@ class Registrar {
     }                                                                          \
   } while (false)
 
+/**
+ * Assert equality between two expressions.
+ */
 #define FABRICA_EXPECT_EQ(left, right)                                       \
   do {                                                                        \
     if (!((left) == (right))) {                                               \
@@ -102,4 +140,3 @@ class Registrar {
                                                             stream.str());     \
     }                                                                         \
   } while (false)
-

@@ -23,12 +23,33 @@ using ViewApplicationConfig = App::ViewApplicationConfig;
 template <typename T>
 using Future = Core::Async::Future<T>;
 
+/**
+ * Construct and run a typed view application instance.
+ *
+ * This helper exposes the application entry point in the `Fabrica::Engine`
+ * namespace so sample and game code can include a single public header.
+ *
+ * @tparam ViewT Concrete view type derived from `BaseView`.
+ * @tparam Args Constructor argument types forwarded to `ViewT`.
+ * @param config Runtime/application configuration.
+ * @param args Constructor arguments forwarded to the view instance.
+ * @return Runtime status from initialization or main loop execution.
+ */
 template <typename ViewT, typename... Args>
 Status RunViewApplication(ViewApplicationConfig config = {}, Args&&... args) {
   return App::RunViewApplication<ViewT>(std::move(config),
                                         std::forward<Args>(args)...);
 }
 
+/**
+ * Run a view application and convert status to process exit code.
+ *
+ * @tparam ViewT Concrete view type derived from `BaseView`.
+ * @tparam Args Constructor argument types forwarded to `ViewT`.
+ * @param config Runtime/application configuration.
+ * @param args Constructor arguments forwarded to the view instance.
+ * @return `EXIT_SUCCESS` when run status is ok; otherwise `EXIT_FAILURE`.
+ */
 template <typename ViewT, typename... Args>
 int RunViewMain(ViewApplicationConfig config = {}, Args&&... args) {
   return App::RunViewMain<ViewT>(std::move(config), std::forward<Args>(args)...);
@@ -36,6 +57,9 @@ int RunViewMain(ViewApplicationConfig config = {}, Args&&... args) {
 
 }  // namespace Fabrica::Engine
 
+/**
+ * Define a default `main()` that boots a specific `BaseView` implementation.
+ */
 #define FABRICA_DEFINE_VIEW_MAIN(ViewType)             \
   int main() {                                          \
     return ::Fabrica::Engine::RunViewMain<ViewType>(); \

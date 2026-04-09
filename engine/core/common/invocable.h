@@ -7,6 +7,9 @@
 
 namespace Fabrica::Core {
 
+/**
+ * Constrains functors to signatures accepted by `Invocable`.
+ */
 template <typename Fn, typename R, typename... Args>
 using EnableIfInvocableMatches = std::enable_if_t<
     std::is_invocable_v<Fn, Args...> &&
@@ -16,11 +19,25 @@ using EnableIfInvocableMatches = std::enable_if_t<
 template <typename Signature>
 class Invocable;
 
+/**
+ * Stores and invokes move-only callable objects through type erasure.
+ *
+ * This utility provides a lightweight alternative to `std::function` when
+ * move-only callables must be supported across engine boundaries.
+ *
+ * @tparam R Return type.
+ * @tparam Args Argument pack for invocation.
+ */
 template <typename R, typename... Args>
 class Invocable<R(Args...)> {
  public:
   Invocable() : invocable_(nullptr, nullptr) {}
 
+  /**
+   * Build an invocable wrapper from a compatible callable.
+   *
+   * @tparam Fn Callable type matching `R(Args...)`.
+   */
   template <typename Fn, EnableIfInvocableMatches<Fn, R, Args...> = 0>
   Invocable(Fn&& fn)
       : invocable_(
@@ -42,18 +59,29 @@ class Invocable<R(Args...)> {
   Invocable& operator=(const Invocable&) = delete;
   Invocable& operator=(Invocable&&) noexcept = default;
 
+  /**
+   * Invoke the wrapped callable.
+   *
+   * @pre Wrapper is not empty.
+   */
   template <typename... OperatorArgs>
   R operator()(OperatorArgs&&... args) {
     assert(invoker_ && invocable_);
     return invoker_(invocable_, std::forward<OperatorArgs>(args)...);
   }
 
+  /**
+   * Invoke the wrapped callable on a const wrapper.
+   *
+   * @pre Wrapper is not empty.
+   */
   template <typename... OperatorArgs>
   R operator()(OperatorArgs&&... args) const {
     assert(invoker_ && invocable_);
     return invoker_(invocable_, std::forward<OperatorArgs>(args)...);
   }
 
+  /// Return true when the wrapper owns an invocable target.
   explicit operator bool() const noexcept {
     return invoker_ != nullptr && invocable_ != nullptr;
   }

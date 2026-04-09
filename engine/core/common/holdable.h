@@ -6,10 +6,24 @@
 
 namespace Fabrica::Core {
 
+/**
+ * Owns an erased movable value used to keep dependencies alive.
+ *
+ * `Holdable` provides type-erased storage with unique ownership semantics.
+ * It is intentionally move-only to prevent accidental duplication of held
+ * lifetime tokens.
+ */
 class Holdable {
  public:
   Holdable() : held_(nullptr, nullptr) {}
 
+  /**
+   * Adopt ownership of a value by move.
+   *
+   * @tparam T Value type.
+   * @param held Value moved into internal erased storage.
+   * @pre `T` is not a raw pointer type.
+   */
   template <typename T>
   explicit Holdable(T held)
       : held_(
@@ -27,6 +41,7 @@ class Holdable {
   Holdable(Holdable&&) noexcept = default;
   Holdable& operator=(Holdable&&) noexcept = default;
 
+  /// Return true when a value is currently owned.
   explicit operator bool() const { return held_ != nullptr; }
 
  private:
@@ -34,4 +49,3 @@ class Holdable {
 };
 
 }  // namespace Fabrica::Core
-

@@ -12,12 +12,28 @@ class FutureImpl;
 
 namespace Fabrica::Core::Async {
 
+/**
+ * Shares task-priority updates across a set of related futures.
+ *
+ * Futures can join a group so a caller can raise or lower urgency for all
+ * members using one operation.
+ */
 class FutureGroup {
  public:
+  /// Create an empty group with an initial cached priority.
   explicit FutureGroup(int task_priority = Jobs::kNormalTaskPriority);
 
+  /**
+   * Add a future implementation to the group.
+   */
   void AddFuture(std::shared_ptr<Internal::FutureImpl> future);
+
+  /**
+   * Update priority for current and future group members.
+   */
   void UpdatePriority(int task_priority);
+
+  /// Return current cached group priority.
   int GetTaskPriority() const;
 
  private:
@@ -32,4 +48,3 @@ class FutureGroup {
 };
 
 }  // namespace Fabrica::Core::Async
-

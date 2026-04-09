@@ -4,6 +4,9 @@
 
 namespace Fabrica::Core::Window {
 
+/**
+ * Implements `IWindowBackend` using the GLFW library.
+ */
 class GlfwWindowBackend final : public IWindowBackend {
  public:
   GlfwWindowBackend() = default;

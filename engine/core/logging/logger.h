@@ -20,28 +20,82 @@
 
 namespace Fabrica::Core::Logging {
 
+/**
+ * Configures logger sinks, queue capacity, and filtering behavior.
+ */
 struct LoggerConfig {
   std::string file_path = "fabrica.log";
+  ///< Destination path when file sink is enabled.
+
   size_t queue_capacity = 2048;
+  ///< Maximum number of buffered log records.
+
   LogLevel min_level = LogLevel::kDebug;
+  ///< Minimum severity accepted at runtime.
+
   bool enable_file_sink = true;
+  ///< Writes records to file when true.
+
   bool enable_console_sink = true;
+  ///< Writes records to stdout/stderr when true.
+
   bool enable_console_colors = true;
+  ///< Enables ANSI coloring for console sink.
 };
 
+/**
+ * Provides asynchronous structured logging with channel-level filtering.
+ *
+ * The logger uses a producer/consumer queue and a dedicated worker thread to
+ * keep call-site overhead low. It is exposed as a singleton to guarantee a
+ * single output stream ordering across systems.
+ *
+ * Thread safety: Public methods are thread-safe.
+ *
+ * @note Call `Initialize()` before first production use.
+ * @see LogChannel, LogLevel, LogStream
+ */
 class Logger {
  public:
+  /// Return the process-wide logger instance.
   static Logger& Instance();
 
+  /**
+   * Initialize sinks, queue, and worker thread.
+   *
+   * @param config Logger runtime configuration.
+   * @return `Status::Ok()` on success, error status otherwise.
+   */
   Status Initialize(const LoggerConfig& config = {});
+
+  /// Flush pending records and stop worker thread.
   void Shutdown();
 
+  /// Set runtime minimum severity threshold.
   void SetMinLevel(LogLevel min_level);
+
+  /// Enable or disable one channel at runtime.
   void SetChannelEnabled(LogChannel channel, bool enabled);
+
+  /**
+   * Check if channel and severity pass current filters.
+   */
   bool IsEnabled(LogChannel channel, LogLevel level) const;
 
+  /**
+   * Submit one log record to the async queue.
+   *
+   * @param channel Logical source channel.
+   * @param level Severity level.
+   * @param file Source file associated with the record.
+   * @param line Source line associated with the record.
+   * @param message Rendered log message.
+   * @param correlation_id Optional request or trace correlation identifier.
+   */
   void Submit(LogChannel channel, LogLevel level, const char* file, int line,
               std::string_view message, std::uint64_t correlation_id = 0);
+
+  /// Block until all queued records are written.
   void Flush();
 
  private:
@@ -51,7 +105,12 @@ class Logger {
   Logger(const Logger&) = delete;
   Logger& operator=(const Logger&) = delete;
 
+  /// Worker thread loop that drains queued records to sinks.
   void WorkerLoop();
+
+  /**
+   * Format and write one record to active sinks.
+   */
   void WriteLine(std::chrono::system_clock::time_point timestamp,
                  LogChannel channel, LogLevel level, std::uint32_t thread_index,
                  const char* file, int line, std::string_view message,
@@ -76,6 +135,11 @@ class Logger {
   std::condition_variable wake_up_;
 };
 
+/**
+ * RAII stream that accumulates message text and submits on destruction.
+ *
+ * This type underpins the `FABRICA_LOG` macro to keep call sites concise.
+ */
 class LogStream {
  public:
   LogStream(LogChannel channel, LogLevel level, const char* file, int line)
@@ -85,6 +149,9 @@ class LogStream {
     Logger::Instance().Submit(channel_, level_, file_, line_, stream_.str());
   }
 
+  /**
+   * Append one value to the buffered message stream.
+   */
   template <typename T>
   LogStream& operator<<(const T& value) {
     stream_ << value;
@@ -99,10 +166,16 @@ class LogStream {
   std::ostringstream stream_;
 };
 
+/**
+ * Evaluate compile-time log filtering based on `FABRICA_LOG_MIN_LEVEL`.
+ */
 constexpr bool IsCompileTimeEnabled(LogLevel level) {
   return static_cast<int>(level) >= FABRICA_LOG_MIN_LEVEL;
 }
 
+/**
+ * Emit a log stream when compile-time filter allows the selected level.
+ */
 #define FABRICA_LOG(Channel, Level)                                             \
   if constexpr (!::Fabrica::Core::Logging::IsCompileTimeEnabled(               \
                     ::Fabrica::Core::Logging::LogLevel::k##Level))             \

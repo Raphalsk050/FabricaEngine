@@ -11,31 +11,69 @@
 
 namespace Fabrica::Core::ECS {
 
+/**
+ * Describes runtime storage metadata for one component type.
+ */
 struct ComponentInfo {
   size_t size = 0;
+  ///< Size in bytes of one component instance.
+
   size_t alignment = 0;
+  ///< Alignment requirement for the component type.
+
   const char* debug_name = "";
+  ///< Non-stable debug label from RTTI.
+
   bool registered = false;
+  ///< True when this slot is occupied by a registered type.
 };
 
+/**
+ * Maps C++ component types to dense runtime indices.
+ *
+ * The registry owns the canonical mapping used by masks and archetype columns.
+ * Registration is intentionally closed after runtime seal.
+ */
 class ComponentRegistry {
  public:
+  /**
+   * Register one component type and assign its dense index.
+   *
+   * @tparam T Trivially copyable/destructible component type.
+   * @param runtime_sealed Whether runtime has entered immutable layout mode.
+   * @return Ok when type is registered or already known.
+   */
   template <typename T>
   Core::Status Register(bool runtime_sealed);
 
+  /**
+   * Check whether a component type was already registered.
+   */
   template <typename T>
   bool IsRegistered() const;
 
+  /**
+   * Return component index for a registered type.
+   *
+   * Returns `kInvalidComponentType` when type is not registered.
+   */
   template <typename T>
   ComponentTypeIndex RequireTypeIndex() const;
 
+  /**
+   * Build a component mask from a type pack.
+   *
+   * @param out_mask Output pointer that receives resulting mask.
+   */
   template <typename... Components>
   Core::Status BuildMask(ComponentMask* out_mask) const;
 
+  /// Return true when a dense index points to a registered component type.
   bool IsIndexRegistered(ComponentTypeIndex index) const {
     return index < kMaxComponentTypes && component_infos_[index].registered;
   }
 
+  /// Return metadata for a given component index.
   const ComponentInfo& GetInfo(ComponentTypeIndex index) const {
     return component_infos_[index];
   }

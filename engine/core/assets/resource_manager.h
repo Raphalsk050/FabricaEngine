@@ -14,7 +14,19 @@
 
 namespace Fabrica::Core::Assets {
 
-enum class LoadPriority { kLow, kNormal, kHigh, kCritical };
+/**
+ * Defines scheduling urgency for asynchronous resource loading tasks.
+ */
+enum class LoadPriority {
+  kLow,
+  ///< Background task with minimal urgency.
+  kNormal,
+  ///< Default task urgency.
+  kHigh,
+  ///< Elevated urgency for near-term use.
+  kCritical,
+  ///< Highest urgency for frame-critical assets.
+};
 
 struct TextureTag {};
 struct MeshTag {};
@@ -24,23 +36,67 @@ using TextureHandle = ResourceHandle<TextureTag>;
 using MeshHandle = ResourceHandle<MeshTag>;
 using AudioHandle = ResourceHandle<AudioTag>;
 
+/**
+ * Loads and deduplicates runtime resources through asynchronous pipelines.
+ *
+ * The manager implements a cache-aside strategy backed by weak futures.
+ * Concurrent requests for the same path share in-flight work. Handle
+ * allocation is serialized to preserve unique ids.
+ *
+ * Thread safety: Public loading methods are thread-safe.
+ *
+ * @note Cache entries are removed when the in-flight future expires.
+ * @see AssetPath, ResourceHandle, Async::Future
+ */
 class ResourceManager {
  public:
+  /**
+   * Load a texture resource and return its asynchronous handle.
+   *
+   * @param path Valid asset path.
+   * @param priority Scheduling priority mapped to job priority.
+   * @return Future resolving to texture handle or load error.
+   */
   Async::Future<TextureHandle> LoadTexture(const AssetPath& path,
                                            LoadPriority priority);
+
+  /**
+   * Load a mesh resource and return its asynchronous handle.
+   */
   Async::Future<MeshHandle> LoadMesh(const AssetPath& path, LoadPriority priority);
+
+  /**
+   * Load an audio resource and return its asynchronous handle.
+   */
   Async::Future<AudioHandle> LoadAudio(const AssetPath& path, LoadPriority priority);
 
  private:
+  /**
+   * Execute the generic read/decode/upload chain for one resource category.
+   *
+   * @tparam HandleT Typed resource handle.
+   * @param path Valid source path.
+   * @param priority Requested load priority.
+   * @param cache Weak-future cache for this resource category.
+   * @param resource_kind Logging label for diagnostics.
+   */
   template <typename HandleT>
   Async::Future<HandleT> LoadResource(const AssetPath& path, LoadPriority priority,
                                       std::unordered_map<std::string,
                                                          Async::WeakFuture<HandleT>>& cache,
                                       const char* resource_kind);
 
+  /**
+   * Allocate a new typed handle while holding `mutex_`.
+   *
+   * @tparam HandleT Typed handle category.
+   * @return Newly allocated handle with generation set to `1`.
+   * @pre Caller holds `mutex_`.
+   */
   template <typename HandleT>
   HandleT AllocateHandleLocked();
 
+  /// Convert `LoadPriority` to scheduler integer priority.
   static int ToTaskPriority(LoadPriority priority);
 
   std::mutex mutex_;

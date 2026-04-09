@@ -4,6 +4,9 @@
 
 namespace Fabrica::Core::Logging {
 
+/**
+ * Enumerates structured logging channels used by the engine.
+ */
 enum class LogChannel : size_t {
   kCore = 0,
   kAsync,
@@ -21,4 +24,3 @@ enum class LogChannel : size_t {
 constexpr size_t kLogChannelCount = static_cast<size_t>(LogChannel::kCount);
 
 }  // namespace Fabrica::Core::Logging
-

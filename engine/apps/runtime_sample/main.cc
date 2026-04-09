@@ -1,5 +1,6 @@
 #include "core/app/fabrica.h"
 #include "core/logging/logger.h"
+
 #include <string>
 
 namespace {
@@ -7,12 +8,24 @@ namespace {
 constexpr int kKeyEscape = 256;
 constexpr int kKeyQUppercase = 81;
 
+/**
+ * Holds movement tuning values for the sample player entity.
+ */
 struct PlayerController {
   float move_speed = 0.0f;
 };
 
+/**
+ * Demonstrates the end-to-end runtime view lifecycle.
+ *
+ * The sample registers one component, spawns one entity, binds quit actions,
+ * and logs per-frame FPS as a reference integration for new projects.
+ */
 class RuntimeSampleView final : public Fabrica::Engine::BaseView {
  public:
+  /**
+   * Configure sample window dimensions and title.
+   */
   Status ConfigureWindow(WindowConfig& config) override {
     config.width = 1280;
     config.height = 720;
@@ -20,6 +33,9 @@ class RuntimeSampleView final : public Fabrica::Engine::BaseView {
     return Status::Ok();
   }
 
+  /**
+   * Register sample ECS state and input bindings.
+   */
   Status Awake() override {
     FABRICA_LOG(Game, Info) << "[Game] Runtime sample view awake";
 
@@ -48,15 +64,24 @@ class RuntimeSampleView final : public Fabrica::Engine::BaseView {
     return Status::Ok();
   }
 
+  /// Log sample startup marker.
   Status Start() override {
     FABRICA_LOG(Game, Info) << "[Game] Runtime sample view started";
     return Status::Ok();
   }
 
+  /**
+   * Log current frame rate every update tick.
+   */
   Status Update(const FrameContext& frame_context) override {
-    FABRICA_LOG(Game, Info) << "[Game] Current FPS is: " << GetCurrentFPS(frame_context.delta_seconds);
-    return Status::Ok(); }
+    FABRICA_LOG(Game, Info)
+        << "[Game] Current FPS is: " << GetCurrentFPS(frame_context.delta_seconds);
+    return Status::Ok();
+  }
 
+  /**
+   * Stop runtime when mapped quit action starts.
+   */
   void OnInputAction(const InputActionEvent& event) override {
     if (event.action == "quit" && event.phase == InputActionPhase::kStarted) {
       FABRICA_LOG(Game, Info) << "[Game] Quit action received";
@@ -64,6 +89,7 @@ class RuntimeSampleView final : public Fabrica::Engine::BaseView {
     }
   }
 
+  /// Log sample shutdown marker.
   void Shutdown() override {
     FABRICA_LOG(Game, Info) << "[Game] Runtime sample view shutdown";
   }
@@ -71,11 +97,14 @@ class RuntimeSampleView final : public Fabrica::Engine::BaseView {
  private:
   EntityHandle player_entity_;
 
+  /**
+   * Convert delta time to frames-per-second with zero guard.
+   */
   float GetCurrentFPS(double delta_time) const {
     if (delta_time > 0.0) {
-      return 1.0 / delta_time;
+      return static_cast<float>(1.0 / delta_time);
     }
-    return 0.0;
+    return 0.0f;
   }
 };
 

@@ -66,6 +66,14 @@ inline constexpr bool AlwaysFalseV = false;
 
 }  // namespace Internal
 
+/**
+ * Composable typed future with continuation chaining and fan-in utilities.
+ *
+ * Future<T> wraps shared async state and supports continuation scheduling,
+ * status propagation, tuple/vector merges, cancellation, and priority updates.
+ *
+ * @tparam T Success value type (Core::Status represents status-only flows).
+ */
 template <typename T>
 class Future {
  public:
@@ -75,6 +83,9 @@ class Future {
                          Core::StatusOr<T>>;
   using ImplWrapper = Internal::FutureImpl::FutureImplWrapper;
 
+  /**
+   * Create a pending future with a fresh shared implementation state.
+   */
   Future()
       : impl_wrapper_(std::make_shared<ImplWrapper>(
             std::make_shared<Internal::FutureImpl>())) {}
@@ -85,6 +96,11 @@ class Future {
 
   bool Ready() const { return impl_wrapper_->GetImpl()->Ready(); }
 
+  /**
+   * Access ready result by const reference.
+   *
+   * @pre Ready() is true.
+   */
   const Result& Get() const {
     FABRICA_ASSERT(Ready(), "Future::Get called before Ready");
     return impl_wrapper_->GetImpl()->Get().GetAs<Result>();
@@ -100,6 +116,12 @@ class Future {
     }
   }
 
+  /**
+   * Attach a continuation and return a child future.
+   *
+   * Continuation errors propagate automatically unless callback explicitly
+   * accepts the parent result.
+   */
   template <typename Fn>
   auto Then(Fn&& fn, Jobs::Executor::Type executor_type =
                         Jobs::Executor::Type::kForeground) const {
@@ -151,6 +173,9 @@ class Future {
     return child;
   }
 
+  /**
+   * Schedule a callable on an executor and return its future.
+   */
   template <typename Fn>
   static Future<T> Schedule(Fn&& fn,
                             Jobs::Executor::Type executor_type =
@@ -180,6 +205,9 @@ class Future {
     return future;
   }
 
+  /**
+   * Combine this future with others and fail fast on first error.
+   */
   template <typename... FutureTypes>
   Future<Core::Status> Combine(FutureTypes... futures) const {
     std::vector<Future<Core::Status>> status_futures;
@@ -189,6 +217,9 @@ class Future {
     return CombineStatusFutures(status_futures, false);
   }
 
+  /**
+   * Combine this future with others and wait for all to complete.
+   */
   template <typename... FutureTypes>
   Future<Core::Status> CombineWaitForAll(FutureTypes... futures) const {
     std::vector<Future<Core::Status>> status_futures;
@@ -198,6 +229,9 @@ class Future {
     return CombineStatusFutures(status_futures, true);
   }
 
+  /**
+   * Merge values from this future and additional futures into one tuple.
+   */
   template <typename... FutureTypes>
   auto Merge(FutureTypes... futures) const
       -> Future<std::tuple<T, typename std::decay_t<FutureTypes>::Value...>> {
@@ -256,8 +290,12 @@ class Future {
         Jobs::Executor::Type::kImmediate);
   }
 
+  /// Cancel the future with default cancelled status.
   void Cancel() { impl_wrapper_->GetImpl()->Cancel(); }
 
+  /**
+   * Attach dependency tokens that must remain alive until completion.
+   */
   template <typename... Args>
   void DependsOn(Args&&... args) const {
     (impl_wrapper_->GetImpl()->DependsOn(
@@ -265,6 +303,9 @@ class Future {
      ...);
   }
 
+  /**
+   * Store this future in an external owner using callable/Remember protocol.
+   */
   template <typename Rememberer>
   void KeptBy(Rememberer rememberer) const {
     if constexpr (requires { rememberer(*this); }) {
@@ -277,6 +318,7 @@ class Future {
     }
   }
 
+  /// Update task priority when underlying executor supports reprioritization.
   void UpdatePriority(int priority) { impl_wrapper_->GetImpl()->UpdatePriority(priority); }
 
  private:
@@ -525,12 +567,18 @@ class Future {
   std::shared_ptr<ImplWrapper> impl_wrapper_;
 };
 
+/**
+ * Weak non-owning reference to a Future<T> shared state.
+ */
 template <typename T>
 class WeakFuture {
  public:
   WeakFuture() = default;
   WeakFuture(const Future<T>& future) : impl_wrapper_(future.impl_wrapper_) {}
 
+  /**
+   * Lock and promote to a strong future when state is still alive.
+   */
   std::optional<Future<T>> Lock() const {
     if (auto impl_wrapper = impl_wrapper_.lock()) {
       return Future<T>(std::move(impl_wrapper));
@@ -542,10 +590,14 @@ class WeakFuture {
   std::weak_ptr<typename Future<T>::ImplWrapper> impl_wrapper_;
 };
 
+/**
+ * Create a weak reference from a strong future.
+ */
 template <typename T>
 WeakFuture<T> MakeWeak(Future<T> future) {
   return WeakFuture<T>(future);
 }
 
 }  // namespace Fabrica::Core::Async
+
 
