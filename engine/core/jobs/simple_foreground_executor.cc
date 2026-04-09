@@ -5,6 +5,9 @@
 
 namespace Fabrica::Core::Jobs {
 
+SimpleForegroundExecutor::SimpleForegroundExecutor()
+    : SimpleForegroundExecutor(TaskScheduler::TaskSchedulerOptions{}) {}
+
 SimpleForegroundExecutor::SimpleForegroundExecutor(
     TaskScheduler::TaskSchedulerOptions options)
     : scheduler_(options) {}
@@ -92,4 +95,5 @@ bool SimpleForegroundExecutor::HasPendingTasks() {
 }
 
 }  // namespace Fabrica::Core::Jobs
+
 

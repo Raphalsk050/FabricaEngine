@@ -18,7 +18,8 @@ class TaskScheduler {
     std::chrono::milliseconds task_age_rate{100};
   };
 
-  explicit TaskScheduler(TaskSchedulerOptions options = {});
+  TaskScheduler();
+  explicit TaskScheduler(TaskSchedulerOptions options);
 
   TaskId PushTask(Core::Invocable<void()> invocable,
                   int priority = kNormalTaskPriority);
@@ -53,4 +54,5 @@ class TaskScheduler {
 };
 
 }  // namespace Fabrica::Core::Jobs
+
 

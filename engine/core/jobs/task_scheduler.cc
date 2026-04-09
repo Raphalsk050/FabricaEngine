@@ -6,6 +6,8 @@
 
 namespace Fabrica::Core::Jobs {
 
+TaskScheduler::TaskScheduler() : TaskScheduler(TaskSchedulerOptions{}) {}
+
 TaskScheduler::TaskScheduler(TaskSchedulerOptions options)
     : options_(options) {}
 
@@ -131,3 +133,5 @@ int TaskScheduler::EffectivePriority(
 }
 
 }  // namespace Fabrica::Core::Jobs
+
+

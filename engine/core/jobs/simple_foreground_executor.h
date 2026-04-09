@@ -9,8 +9,9 @@ namespace Fabrica::Core::Jobs {
 
 class SimpleForegroundExecutor final : public Executor {
  public:
+  SimpleForegroundExecutor();
   explicit SimpleForegroundExecutor(
-      TaskScheduler::TaskSchedulerOptions options = {});
+      TaskScheduler::TaskSchedulerOptions options);
 
   TaskId ScheduleInvocable(Core::Invocable<void()> invocable,
                            int task_priority = kNormalTaskPriority) override;
@@ -34,4 +35,5 @@ class SimpleForegroundExecutor final : public Executor {
 };
 
 }  // namespace Fabrica::Core::Jobs
+
 

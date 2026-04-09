@@ -18,7 +18,8 @@ class ThreadPoolExecutor final : public Executor {
     Executor* foreground_executor = nullptr;
   };
 
-  explicit ThreadPoolExecutor(Options options = {});
+  ThreadPoolExecutor();
+  explicit ThreadPoolExecutor(Options options);
   ~ThreadPoolExecutor() override;
 
   TaskId ScheduleInvocable(Core::Invocable<void()> invocable,
@@ -53,3 +54,4 @@ class ThreadPoolExecutor final : public Executor {
 };
 
 }  // namespace Fabrica::Core::Jobs
+

@@ -7,6 +7,8 @@
 
 namespace Fabrica::Core::Jobs {
 
+ThreadPoolExecutor::ThreadPoolExecutor() : ThreadPoolExecutor(Options{}) {}
+
 ThreadPoolExecutor::ThreadPoolExecutor(Options options)
     : scheduler_(options.scheduler_options),
       foreground_executor_(options.foreground_executor) {
@@ -196,3 +198,4 @@ void ThreadPoolExecutor::RunTask(Core::Invocable<void()> task) {
 }
 
 }  // namespace Fabrica::Core::Jobs
+
