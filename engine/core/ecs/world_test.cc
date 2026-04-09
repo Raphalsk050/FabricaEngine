@@ -131,6 +131,21 @@ FABRICA_TEST(ECSWorldRejectsStaleEntityHandles) {
   FABRICA_EXPECT_TRUE(!stale_status.ok());
 }
 
+FABRICA_TEST(ECSWorldReserveArchetypeRejectsUnregisteredComponent) {
+  Fabrica::Core::ECS::World world;
+
+  const Fabrica::Core::Status reserve_status =
+      world.ReserveArchetype<Transform>(4);
+  FABRICA_EXPECT_TRUE(!reserve_status.ok());
+}
+
+FABRICA_TEST(ECSWorldRegisterComponentAfterSealFails) {
+  Fabrica::Core::ECS::World world;
+  FABRICA_EXPECT_TRUE(world.SealForRuntime().ok());
+
+  const Fabrica::Core::Status register_status = world.RegisterComponent<Transform>();
+  FABRICA_EXPECT_TRUE(!register_status.ok());
+}
 FABRICA_TEST(ECSWorldSealedRuntimeRejectsArchetypeCreation) {
   Fabrica::Core::ECS::World world;
   world.RegisterComponent<Transform>();

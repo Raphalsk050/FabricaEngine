@@ -1,28 +1,19 @@
 #pragma once
 
 #include <array>
-#include <bit>
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
-#include <limits>
 #include <type_traits>
-#include <typeinfo>
-#include <unordered_map>
 #include <utility>
-#include <vector>
 
 #include "core/common/status.h"
-#include "core/common/typed_id.h"
+#include "core/ecs/archetype_store.h"
+#include "core/ecs/component_registry.h"
+#include "core/ecs/ecs_types.h"
+#include "core/ecs/entity_store.h"
 
 namespace Fabrica::Core::ECS {
-
-constexpr size_t kMaxComponentTypes = 64;
-using ComponentMask = std::uint64_t;
-using ComponentTypeIndex = std::uint8_t;
-
-struct EntityIdTag {};
-using EntityId = Core::TypedId<EntityIdTag, std::uint64_t>;
 
 class EntityHandle;
 
@@ -42,7 +33,7 @@ class World {
   Core::Status DestroyEntity(EntityId entity);
   bool IsAlive(EntityId entity) const;
 
-  size_t GetAliveEntityCount() const { return alive_entity_count_; }
+  size_t GetAliveEntityCount() const { return entity_store_.GetAliveCount(); }
   size_t GetArchetypeCount() const;
 
   Core::Status ReserveEntities(size_t capacity);
@@ -79,62 +70,15 @@ class World {
   void ForEach(Fn&& fn);
 
  private:
-  struct ComponentInfo {
-    size_t size = 0;
-    size_t alignment = 0;
-    const char* debug_name = "";
-    bool registered = false;
-  };
+  using EntityRecord = EntityStore::EntityRecord;
+  using Archetype = ArchetypeStore::Archetype;
 
-  struct ArchetypeColumn {
-    bool active = false;
-    size_t element_size = 0;
-    std::vector<std::byte> storage;
-  };
-
-  struct Archetype {
-    ComponentMask mask = 0;
-    size_t entity_limit = 0;
-    std::vector<EntityId> entities;
-    std::array<ArchetypeColumn, kMaxComponentTypes> columns{};
-
-    void Reserve(size_t entity_capacity);
-    bool Append(EntityId entity, bool runtime_sealed, size_t* out_row);
-    void RemoveSwapBack(size_t row, EntityId* moved_entity);
-    void* MutableAt(ComponentTypeIndex component, size_t row);
-    const void* At(ComponentTypeIndex component, size_t row) const;
-  };
-
-  struct EntityRecord {
-    std::uint32_t generation = 1;
-    bool alive = false;
-    ComponentMask component_mask = 0;
-    std::uint32_t archetype_index = 0;
-    std::uint32_t row_in_archetype = 0;
-  };
-
-  static constexpr std::uint32_t kInvalidEntityIndex = 0;
   static constexpr std::uint32_t kInvalidArchetypeIndex =
-      std::numeric_limits<std::uint32_t>::max();
+      ArchetypeStore::kInvalidArchetypeIndex;
   static constexpr ComponentTypeIndex kInvalidComponentType =
       static_cast<ComponentTypeIndex>(kMaxComponentTypes);
 
   static ComponentMask ComponentBit(ComponentTypeIndex component);
-  static std::uint32_t EntityIndex(EntityId entity);
-  static std::uint32_t EntityGeneration(EntityId entity);
-  static EntityId MakeEntityId(std::uint32_t index, std::uint32_t generation);
-
-  template <typename T>
-  static const void* ComponentTypeKey();
-
-  template <typename T>
-  ComponentTypeIndex FindComponentTypeIndex() const;
-
-  template <typename T>
-  ComponentTypeIndex RequireComponentTypeIndex() const;
-
-  template <typename... Components>
-  Core::Status BuildMask(ComponentMask* out_mask) const;
 
   std::uint32_t GetOrCreateArchetype(ComponentMask mask);
   EntityRecord* GetEntityRecord(EntityId entity);
@@ -157,19 +101,11 @@ class World {
                             std::index_sequence<I...>);
 
   WorldConfig config_;
-  std::uint32_t alive_entity_count_ = 0;
   bool runtime_sealed_ = false;
-  size_t entity_capacity_limit_ = 0;
 
-  std::vector<EntityRecord> entity_records_;
-  std::vector<std::uint32_t> free_entity_indices_;
-
-  std::array<ComponentInfo, kMaxComponentTypes> component_infos_{};
-  ComponentTypeIndex next_component_type_ = 0;
-  std::unordered_map<const void*, ComponentTypeIndex> component_type_lookup_;
-
-  std::vector<Archetype> archetypes_;
-  std::unordered_map<ComponentMask, std::uint32_t> archetype_lookup_;
+  EntityStore entity_store_;
+  ComponentRegistry component_registry_;
+  ArchetypeStore archetype_store_;
 };
 
 class EntityHandle {
@@ -214,51 +150,17 @@ class EntityHandle {
 
 template <typename T>
 Core::Status World::RegisterComponent() {
-  static_assert(std::is_trivially_copyable_v<T>,
-                "ECS components must be trivially copyable");
-  static_assert(std::is_trivially_destructible_v<T>,
-                "ECS components must be trivially destructible");
-
-  if constexpr (alignof(T) > alignof(std::max_align_t)) {
-    return Core::Status(Core::ErrorCode::kFailedPrecondition,
-                        "Component alignment exceeds ECS storage guarantee");
-  } else {
-    if (runtime_sealed_) {
-      return Core::Status(Core::ErrorCode::kFailedPrecondition,
-                          "Cannot register components after runtime seal");
-    }
-
-    const void* component_key = ComponentTypeKey<T>();
-    if (component_type_lookup_.contains(component_key)) {
-      return Core::Status::Ok();
-    }
-
-    if (next_component_type_ >= kMaxComponentTypes) {
-      return Core::Status(Core::ErrorCode::kOutOfRange,
-                          "Maximum component type count reached");
-    }
-
-    const ComponentTypeIndex component_type = next_component_type_;
-    ++next_component_type_;
-
-    component_type_lookup_.emplace(component_key, component_type);
-    component_infos_[component_type] = ComponentInfo{
-        .size = sizeof(T),
-        .alignment = alignof(T),
-        .debug_name = typeid(T).name(),
-        .registered = true};
-    return Core::Status::Ok();
-  }
+  return component_registry_.Register<T>(runtime_sealed_);
 }
 
 template <typename T>
 bool World::IsComponentRegistered() const {
-  return FindComponentTypeIndex<T>() != kInvalidComponentType;
+  return component_registry_.IsRegistered<T>();
 }
 
 template <typename T>
 Core::Status World::AddComponent(EntityId entity, const T& component) {
-  const ComponentTypeIndex component_type = RequireComponentTypeIndex<T>();
+  const ComponentTypeIndex component_type = component_registry_.RequireTypeIndex<T>();
   if (component_type == kInvalidComponentType) {
     return Core::Status(Core::ErrorCode::kFailedPrecondition,
                         "Component type was not registered");
@@ -286,8 +188,8 @@ Core::Status World::AddComponent(EntityId entity, const T& component) {
                         "Target archetype is unavailable in runtime-sealed mode");
   }
 
-  Archetype& source_archetype = archetypes_[source_archetype_index];
-  Archetype& destination_archetype = archetypes_[destination_archetype_index];
+  Archetype& source_archetype = archetype_store_.Get(source_archetype_index);
+  Archetype& destination_archetype = archetype_store_.Get(destination_archetype_index);
 
   size_t destination_row = 0;
   if (!destination_archetype.Append(entity, runtime_sealed_, &destination_row)) {
@@ -312,7 +214,7 @@ Core::Status World::AddComponent(EntityId entity, const T& component) {
 
 template <typename T>
 Core::Status World::RemoveComponent(EntityId entity) {
-  const ComponentTypeIndex component_type = RequireComponentTypeIndex<T>();
+  const ComponentTypeIndex component_type = component_registry_.RequireTypeIndex<T>();
   if (component_type == kInvalidComponentType) {
     return Core::Status::Ok();
   }
@@ -337,8 +239,8 @@ Core::Status World::RemoveComponent(EntityId entity) {
                         "Target archetype is unavailable in runtime-sealed mode");
   }
 
-  Archetype& source_archetype = archetypes_[source_archetype_index];
-  Archetype& destination_archetype = archetypes_[destination_archetype_index];
+  Archetype& source_archetype = archetype_store_.Get(source_archetype_index);
+  Archetype& destination_archetype = archetype_store_.Get(destination_archetype_index);
 
   size_t destination_row = 0;
   if (!destination_archetype.Append(entity, runtime_sealed_, &destination_row)) {
@@ -358,7 +260,7 @@ Core::Status World::RemoveComponent(EntityId entity) {
 
 template <typename T>
 bool World::HasComponent(EntityId entity) const {
-  const ComponentTypeIndex component_type = RequireComponentTypeIndex<T>();
+  const ComponentTypeIndex component_type = component_registry_.RequireTypeIndex<T>();
   if (component_type == kInvalidComponentType) {
     return false;
   }
@@ -373,7 +275,7 @@ bool World::HasComponent(EntityId entity) const {
 
 template <typename T>
 T* World::GetComponent(EntityId entity) {
-  const ComponentTypeIndex component_type = RequireComponentTypeIndex<T>();
+  const ComponentTypeIndex component_type = component_registry_.RequireTypeIndex<T>();
   if (component_type == kInvalidComponentType) {
     return nullptr;
   }
@@ -392,7 +294,7 @@ T* World::GetComponent(EntityId entity) {
 
 template <typename T>
 const T* World::GetComponent(EntityId entity) const {
-  const ComponentTypeIndex component_type = RequireComponentTypeIndex<T>();
+  const ComponentTypeIndex component_type = component_registry_.RequireTypeIndex<T>();
   if (component_type == kInvalidComponentType) {
     return nullptr;
   }
@@ -415,7 +317,7 @@ void World::ForEach(Fn&& fn) {
                 "ForEach requires at least one component type");
 
   const std::array<ComponentTypeIndex, sizeof...(Components)> component_ids = {
-      RequireComponentTypeIndex<Components>()...};
+      component_registry_.RequireTypeIndex<Components>()...};
   for (ComponentTypeIndex component_id : component_ids) {
     if (component_id == kInvalidComponentType) {
       return;
@@ -428,7 +330,7 @@ void World::ForEach(Fn&& fn) {
   }
 
   auto& callback = fn;
-  for (Archetype& archetype : archetypes_) {
+  for (Archetype& archetype : archetype_store_.MutableArchetypes()) {
     if ((archetype.mask & query_mask) != query_mask) {
       continue;
     }
@@ -444,64 +346,12 @@ void World::ForEach(Fn&& fn) {
 template <typename... Components>
 Core::Status World::ReserveArchetype(size_t entity_capacity) {
   ComponentMask mask = 0;
-  const Core::Status build_mask_status = BuildMask<Components...>(&mask);
+  const Core::Status build_mask_status =
+      component_registry_.BuildMask<Components...>(&mask);
   if (!build_mask_status.ok()) {
     return build_mask_status;
   }
   return ReserveArchetype(mask, entity_capacity);
-}
-
-template <typename T>
-const void* World::ComponentTypeKey() {
-  static int key = 0;
-  return &key;
-}
-
-template <typename T>
-ComponentTypeIndex World::FindComponentTypeIndex() const {
-  const auto lookup_it = component_type_lookup_.find(ComponentTypeKey<T>());
-  if (lookup_it == component_type_lookup_.end()) {
-    return kInvalidComponentType;
-  }
-  return lookup_it->second;
-}
-
-template <typename T>
-ComponentTypeIndex World::RequireComponentTypeIndex() const {
-  const ComponentTypeIndex component_type = FindComponentTypeIndex<T>();
-  if (component_type == kInvalidComponentType) {
-    return kInvalidComponentType;
-  }
-
-  const ComponentInfo& info = component_infos_[component_type];
-  if (!info.registered) {
-    return kInvalidComponentType;
-  }
-  return component_type;
-}
-
-template <typename... Components>
-Core::Status World::BuildMask(ComponentMask* out_mask) const {
-  if (out_mask == nullptr) {
-    return Core::Status::InvalidArgument("Output mask pointer cannot be null");
-  }
-
-  ComponentMask mask = 0;
-  if constexpr (sizeof...(Components) > 0) {
-    const std::array<ComponentTypeIndex, sizeof...(Components)> component_ids = {
-        RequireComponentTypeIndex<Components>()...};
-
-    for (ComponentTypeIndex component_id : component_ids) {
-      if (component_id == kInvalidComponentType) {
-        return Core::Status(Core::ErrorCode::kFailedPrecondition,
-                            "Component type was not registered");
-      }
-      mask |= ComponentBit(component_id);
-    }
-  }
-
-  *out_mask = mask;
-  return Core::Status::Ok();
 }
 
 template <typename Fn, typename... Components, size_t... I>
@@ -516,7 +366,6 @@ void World::InvokeForEach(
     fn(*static_cast<Components*>(archetype->MutableAt(component_ids[I], row))...);
   }
 }
-
 
 inline bool EntityHandle::IsValid() const {
   return world_ != nullptr && entity_.IsValid() && world_->IsAlive(entity_);
