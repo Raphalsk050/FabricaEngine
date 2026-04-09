@@ -1,5 +1,6 @@
 #include "core/app/fabrica.h"
 #include "core/logging/logger.h"
+#include <string>
 
 namespace {
 
@@ -52,8 +53,8 @@ class RuntimeSampleView final : public Fabrica::Engine::BaseView {
     return Status::Ok();
   }
 
-  Status Update(const FrameContext&) override {
-    FABRICA_LOG(Game, Info) << "[Game] Runtime sample view update";
+  Status Update(const FrameContext& frame_context) override {
+    FABRICA_LOG(Game, Info) << "[Game] Current FPS is: " << GetCurrentFPS(frame_context.delta_seconds);
     return Status::Ok(); }
 
   void OnInputAction(const InputActionEvent& event) override {
@@ -69,6 +70,13 @@ class RuntimeSampleView final : public Fabrica::Engine::BaseView {
 
  private:
   EntityHandle player_entity_;
+
+  float GetCurrentFPS(double delta_time) const {
+    if (delta_time > 0.0) {
+      return 1.0 / delta_time;
+    }
+    return 0.0;
+  }
 };
 
 }  // namespace
