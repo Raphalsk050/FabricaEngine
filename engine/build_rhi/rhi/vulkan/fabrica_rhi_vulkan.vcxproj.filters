@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\rhi\vulkan\src\VulkanBackend.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\rhi\vulkan\src\VulkanVolk.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\rhi\vulkan\src\VulkanRHIContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\rhi\vulkan\src\VulkanInit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\rhi\vulkan\src\VulkanBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\rhi\vulkan\src\VulkanTexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\rhi\vulkan\src\VulkanSwapChain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\rhi\vulkan\src\VulkanCommandList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\rhi\vulkan\src\VulkanPipeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\rhi\vulkan\src\VulkanRenderPass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\rhi\vulkan\src\VulkanDescriptorAllocator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\rhi\vulkan\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{5BEC8E93-2763-3CA3-A576-CE415048380A}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

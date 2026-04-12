@@ -108,3 +108,16 @@ chmod +x scripts/build_linux.sh
 ```
 
 This script configures with Ninja and exports `compile_commands.json` into paths CLion can consume. Use `-Build` to compile (default target: `fabrica_runtime_sample`). For core-only indexing: `-NoSamples -WithTests`.
+
+## VSCode workspace generation (Windows)
+
+```powershell
+.\scripts\generate_vscode_workspace.ps1
+.\scripts\generate_vscode_workspace.ps1 -BuildSamples -FetchGlfw
+.\scripts\generate_vscode_workspace.ps1 -OutputPath FabricaEngine.Debug.code-workspace -Config Debug
+```
+
+This script generates a `.code-workspace` file for VSCode with the engine folder, CMake settings, compile commands path, and extension recommendations needed for indexing.
+
+Open the generated workspace file in VSCode and let CMake Tools configure the project. By default the workspace indexes engine code plus tests without samples. Use `-BuildSamples -FetchGlfw` when you also want sample targets and GLFW-backed code paths in the index.
+

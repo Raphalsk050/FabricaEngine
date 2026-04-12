@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.25)
 project(FabricaEngine LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -26,6 +26,8 @@ set(FABRICA_GLFW_BACKEND_SOURCE "none")
 
 add_subdirectory(core)
 add_subdirectory(pal)
+add_subdirectory(rhi)
+add_subdirectory(renderer)
 
 if(FABRICA_BUILD_SAMPLES)
   add_subdirectory(samples)

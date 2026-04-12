@@ -1,0 +1,321 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ResolveNugetPackages>false</ResolveNugetPackages>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{FDA83664-2A87-39E4-9920-51C761F849C4}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>ALL_BUILD</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine -BC:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi --check-stamp-file C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CTest.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CTestTargets.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CTestUseLaunchers.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\DartConfiguration.tcl.in;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCXXLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-Initialize.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\WindowsPaths.cmake;C:\Program Files\CMake\share\cmake-4.1\Templates\CTestScript.cmake.in;C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\CMakeFiles\4.1.1\CMakeCXXCompiler.cmake;C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\CMakeFiles\4.1.1\CMakeRCCompiler.cmake;C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\CMakeFiles\4.1.1\CMakeSystem.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine -BC:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi --check-stamp-file C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CTest.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CTestTargets.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CTestUseLaunchers.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\DartConfiguration.tcl.in;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCXXLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-Initialize.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\WindowsPaths.cmake;C:\Program Files\CMake\share\cmake-4.1\Templates\CTestScript.cmake.in;C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\CMakeFiles\4.1.1\CMakeCXXCompiler.cmake;C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\CMakeFiles\4.1.1\CMakeRCCompiler.cmake;C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\CMakeFiles\4.1.1\CMakeSystem.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine -BC:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi --check-stamp-file C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CTest.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CTestTargets.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CTestUseLaunchers.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\DartConfiguration.tcl.in;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCXXLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-Initialize.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\WindowsPaths.cmake;C:\Program Files\CMake\share\cmake-4.1\Templates\CTestScript.cmake.in;C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\CMakeFiles\4.1.1\CMakeCXXCompiler.cmake;C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\CMakeFiles\4.1.1\CMakeRCCompiler.cmake;C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\CMakeFiles\4.1.1\CMakeSystem.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine -BC:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi --check-stamp-file C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CTest.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CTestTargets.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\CTestUseLaunchers.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\DartConfiguration.tcl.in;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCXXLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Linker\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-Initialize.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\Platform\WindowsPaths.cmake;C:\Program Files\CMake\share\cmake-4.1\Templates\CTestScript.cmake.in;C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\CMakeFiles\4.1.1\CMakeCXXCompiler.cmake;C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\CMakeFiles\4.1.1\CMakeRCCompiler.cmake;C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\CMakeFiles\4.1.1\CMakeSystem.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\ZERO_CHECK.vcxproj">
+      <Project>{308087FC-4760-37BA-9E8A-39A321D4EF59}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\samples\fabrica_assets_sample.vcxproj">
+      <Project>{AAAA9DD3-8414-3E7A-A5DE-DB526B3E4407}</Project>
+      <Name>fabrica_assets_sample</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\samples\fabrica_async_sample.vcxproj">
+      <Project>{EA4E6D2D-95BB-3398-9FC7-2EAE392B9D5D}</Project>
+      <Name>fabrica_async_sample</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\samples\fabrica_common_sample.vcxproj">
+      <Project>{C1A57298-2C46-3991-B65C-FE6F6675EFE8}</Project>
+      <Name>fabrica_common_sample</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\core\fabrica_core_app.vcxproj">
+      <Project>{D9860BA3-E96A-310F-909F-5EB3845039AB}</Project>
+      <Name>fabrica_core_app</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\core\fabrica_core_assets.vcxproj">
+      <Project>{3ABE0623-35E2-3AEC-8F42-E2706EF2507C}</Project>
+      <Name>fabrica_core_assets</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\core\fabrica_core_async.vcxproj">
+      <Project>{CF6576A6-2C62-33BC-A289-F26F1BE05803}</Project>
+      <Name>fabrica_core_async</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\core\fabrica_core_common.vcxproj">
+      <Project>{B27CC10F-0473-3126-9F87-8224577AA30B}</Project>
+      <Name>fabrica_core_common</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\core\fabrica_core_ecs.vcxproj">
+      <Project>{05B32559-5949-357C-A4DD-606DD82BAC54}</Project>
+      <Name>fabrica_core_ecs</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\core\fabrica_core_input.vcxproj">
+      <Project>{9D0C1D10-E63E-36E1-9FAE-1E33078F2865}</Project>
+      <Name>fabrica_core_input</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\core\fabrica_core_jobs.vcxproj">
+      <Project>{64DD955D-198F-3EE0-AF4F-F06753B8E4AE}</Project>
+      <Name>fabrica_core_jobs</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\core\fabrica_core_logging.vcxproj">
+      <Project>{D28EE2E8-BA22-3FF0-89F7-DFC0A8DAF065}</Project>
+      <Name>fabrica_core_logging</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\core\fabrica_core_memory.vcxproj">
+      <Project>{4051A9BD-364C-3875-AE7B-F1FB8257A31B}</Project>
+      <Name>fabrica_core_memory</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\core\fabrica_core_runtime.vcxproj">
+      <Project>{338F35BF-0157-32E6-BBBB-4F34BCB65CE7}</Project>
+      <Name>fabrica_core_runtime</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\core\fabrica_core_tests.vcxproj">
+      <Project>{B984E5DE-BEB7-3D29-995A-2A35F7355F1E}</Project>
+      <Name>fabrica_core_tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\core\fabrica_core_window.vcxproj">
+      <Project>{F32F8FD3-BD81-3671-B045-185DF35FD95D}</Project>
+      <Name>fabrica_core_window</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\samples\fabrica_ecs_sample.vcxproj">
+      <Project>{58F8CEC8-D1A2-397A-8BE2-1266F416E69F}</Project>
+      <Name>fabrica_ecs_sample</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\samples\fabrica_input_sample.vcxproj">
+      <Project>{7BAB8351-DBF0-3918-B141-3EAFAF4D4630}</Project>
+      <Name>fabrica_input_sample</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\samples\fabrica_jobs_sample.vcxproj">
+      <Project>{03EC384C-5FD8-39B4-AC8A-2582CD0AE3BF}</Project>
+      <Name>fabrica_jobs_sample</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\samples\fabrica_logging_sample.vcxproj">
+      <Project>{4EE4C0B9-D96E-3305-9BAE-C7B446328F42}</Project>
+      <Name>fabrica_logging_sample</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\samples\fabrica_memory_sample.vcxproj">
+      <Project>{08DD537E-C10C-397F-9424-AC04D9294D7D}</Project>
+      <Name>fabrica_memory_sample</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\pal\fabrica_pal.vcxproj">
+      <Project>{194FBB81-37B9-3F91-8C2C-00BF624561E0}</Project>
+      <Name>fabrica_pal</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\samples\fabrica_pal_sample.vcxproj">
+      <Project>{E7205575-3A4E-33C2-8801-D58CA2EC4516}</Project>
+      <Name>fabrica_pal_sample</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\pal\fabrica_pal_tests.vcxproj">
+      <Project>{97866869-4E0B-3541-8346-0A63CD24F92C}</Project>
+      <Name>fabrica_pal_tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\renderer\fabrica_renderer.vcxproj">
+      <Project>{EE72B48E-0687-3316-A1A6-4FC9CCC25E93}</Project>
+      <Name>fabrica_renderer</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\samples\fabrica_renderer_sample.vcxproj">
+      <Project>{4DC87E03-DEA4-386C-A9FB-6826AADF6C16}</Project>
+      <Name>fabrica_renderer_sample</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\renderer\fabrica_renderer_tests.vcxproj">
+      <Project>{D3A85F58-4A92-3B16-BD59-8B2475829536}</Project>
+      <Name>fabrica_renderer_tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\rhi\fabrica_rhi.vcxproj">
+      <Project>{1C6C1A98-15CF-3FE9-8178-A5E7B53F9FDB}</Project>
+      <Name>fabrica_rhi</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\rhi\fabrica_rhi_tests.vcxproj">
+      <Project>{7174EF8B-D4E7-3BF3-8C51-7A8E595E0BB0}</Project>
+      <Name>fabrica_rhi_tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\samples\fabrica_rhi_triangle_sample.vcxproj">
+      <Project>{D54B8297-64D2-372E-8FCB-E0E96E201370}</Project>
+      <Name>fabrica_rhi_triangle_sample</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\rhi\vulkan\fabrica_rhi_vulkan.vcxproj">
+      <Project>{6C815AF9-D69C-3063-951B-8D490D119870}</Project>
+      <Name>fabrica_rhi_vulkan</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\samples\fabrica_runtime_headless_sample.vcxproj">
+      <Project>{9BBCBF68-A49D-3D68-AC41-28603B0537F6}</Project>
+      <Name>fabrica_runtime_headless_sample</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\samples\fabrica_runtime_sample.vcxproj">
+      <Project>{DC8C1F83-25F3-3F94-BCE5-438BD430772A}</Project>
+      <Name>fabrica_runtime_sample</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\samples\fabrica_view_application_sample.vcxproj">
+      <Project>{BC2B8A65-E09E-37DE-87A4-9AC46D9EF574}</Project>
+      <Name>fabrica_view_application_sample</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\samples\fabrica_window_sample.vcxproj">
+      <Project>{2B2F48B2-CFCB-3728-8B1B-7834AEBD33AE}</Project>
+      <Name>fabrica_window_sample</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\_deps\glfw-build\src\glfw.vcxproj">
+      <Project>{CF2006CF-396A-3202-8E65-590ABD61761A}</Project>
+      <Name>glfw</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

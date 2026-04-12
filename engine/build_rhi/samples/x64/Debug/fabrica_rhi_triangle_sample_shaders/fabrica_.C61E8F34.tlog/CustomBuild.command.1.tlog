@@ -1,0 +1,42 @@
+^C:\USERS\RAPHA\DOCUMENTS\_PROJECTS\FABRICAENGINE\ENGINE\BUILD_RHI\CMAKEFILES\F02223E7A76AF41A67BE7253B25F2342\TRIANGLE.FRAG.SPV.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E make_directory C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi/samples/compiled_shaders/rhi_triangle_sample
+if %errorlevel% neq 0 goto :cmEnd
+C:\VulkanSDK\1.4.328.0\Bin\glslc.exe C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/samples/rhi_triangle_sample/shaders/triangle.frag -o C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi/samples/compiled_shaders/rhi_triangle_sample/triangle.frag.spv
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\RAPHA\DOCUMENTS\_PROJECTS\FABRICAENGINE\ENGINE\BUILD_RHI\CMAKEFILES\F02223E7A76AF41A67BE7253B25F2342\TRIANGLE.VERT.SPV.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E make_directory C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi/samples/compiled_shaders/rhi_triangle_sample
+if %errorlevel% neq 0 goto :cmEnd
+C:\VulkanSDK\1.4.328.0\Bin\glslc.exe C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/samples/rhi_triangle_sample/shaders/triangle.vert -o C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi/samples/compiled_shaders/rhi_triangle_sample/triangle.vert.spv
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\RAPHA\DOCUMENTS\_PROJECTS\FABRICAENGINE\ENGINE\BUILD_RHI\CMAKEFILES\3BD30A78CCC6DB5A9BFE3AB88297BD33\FABRICA_RHI_TRIANGLE_SAMPLE_SHADERS.RULE
+setlocal
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\RAPHA\DOCUMENTS\_PROJECTS\FABRICAENGINE\ENGINE\SAMPLES\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine -BC:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi --check-stamp-file C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi/samples/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

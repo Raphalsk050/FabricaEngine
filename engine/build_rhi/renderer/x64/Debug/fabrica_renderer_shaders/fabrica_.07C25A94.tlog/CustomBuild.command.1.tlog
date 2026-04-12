@@ -1,0 +1,66 @@
+^C:\USERS\RAPHA\DOCUMENTS\_PROJECTS\FABRICAENGINE\ENGINE\BUILD_RHI\CMAKEFILES\BFA688F5B001542333364977211B0790\FULLSCREEN.VERT.SPV.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E make_directory C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi/renderer/compiled_shaders
+if %errorlevel% neq 0 goto :cmEnd
+C:\VulkanSDK\1.4.328.0\Bin\glslc.exe -I C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/renderer/shaders -I C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/renderer/shaders/common C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/renderer/shaders/fullscreen.vert -o C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi/renderer/compiled_shaders/fullscreen.vert.spv
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\RAPHA\DOCUMENTS\_PROJECTS\FABRICAENGINE\ENGINE\BUILD_RHI\CMAKEFILES\BFA688F5B001542333364977211B0790\PBR.FRAG.SPV.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E make_directory C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi/renderer/compiled_shaders
+if %errorlevel% neq 0 goto :cmEnd
+C:\VulkanSDK\1.4.328.0\Bin\glslc.exe -I C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/renderer/shaders -I C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/renderer/shaders/common C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/renderer/shaders/pbr.frag -o C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi/renderer/compiled_shaders/pbr.frag.spv
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\RAPHA\DOCUMENTS\_PROJECTS\FABRICAENGINE\ENGINE\BUILD_RHI\CMAKEFILES\BFA688F5B001542333364977211B0790\PBR.VERT.SPV.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E make_directory C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi/renderer/compiled_shaders
+if %errorlevel% neq 0 goto :cmEnd
+C:\VulkanSDK\1.4.328.0\Bin\glslc.exe -I C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/renderer/shaders -I C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/renderer/shaders/common C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/renderer/shaders/pbr.vert -o C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi/renderer/compiled_shaders/pbr.vert.spv
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\RAPHA\DOCUMENTS\_PROJECTS\FABRICAENGINE\ENGINE\BUILD_RHI\CMAKEFILES\BFA688F5B001542333364977211B0790\TONEMAPPING.FRAG.SPV.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E make_directory C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi/renderer/compiled_shaders
+if %errorlevel% neq 0 goto :cmEnd
+C:\VulkanSDK\1.4.328.0\Bin\glslc.exe -I C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/renderer/shaders -I C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/renderer/shaders/common C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/renderer/shaders/tonemapping.frag -o C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi/renderer/compiled_shaders/tonemapping.frag.spv
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\RAPHA\DOCUMENTS\_PROJECTS\FABRICAENGINE\ENGINE\BUILD_RHI\CMAKEFILES\89072BF7E8D692F915E50C966027084E\FABRICA_RENDERER_SHADERS.RULE
+setlocal
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\RAPHA\DOCUMENTS\_PROJECTS\FABRICAENGINE\ENGINE\RENDERER\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine -BC:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi --check-stamp-file C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi/renderer/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

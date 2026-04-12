@@ -1,0 +1,446 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{B984E5DE-BEB7-3D29-995A-2A35F7355F1E}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>fabrica_core_tests</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\core\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fabrica_core_tests.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fabrica_core_tests</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\core\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fabrica_core_tests.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fabrica_core_tests</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\core\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">fabrica_core_tests.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">fabrica_core_tests</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\core\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">fabrica_core_tests.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">fabrica_core_tests</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\core\..;C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\build\_deps\glfw-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /FS</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <ConformanceMode>true</ConformanceMode>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;FABRICA_DEBUG_BUILD=1;FABRICA_USE_GLFW=1;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;FABRICA_DEBUG_BUILD=1;FABRICA_USE_GLFW=1;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\core\..;C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\build\_deps\glfw-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\core\..;C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\build\_deps\glfw-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>Debug\fabrica_core_common.lib;Debug\fabrica_core_async.lib;Debug\fabrica_core_assets.lib;Debug\fabrica_core_ecs.lib;Debug\fabrica_core_input.lib;Debug\fabrica_core_app.lib;Debug\fabrica_core_jobs.lib;Debug\fabrica_core_logging.lib;Debug\fabrica_core_memory.lib;Debug\fabrica_core_runtime.lib;Debug\fabrica_core_window.lib;Debug\fabrica_core_async.lib;Debug\fabrica_core_ecs.lib;Debug\fabrica_core_input.lib;Debug\fabrica_core_jobs.lib;Debug\fabrica_core_window.lib;Debug\fabrica_core_logging.lib;..\_deps\glfw-build\src\Debug\glfw3.lib;Debug\fabrica_core_common.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi/core/Debug/fabrica_core_tests.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi/core/Debug/fabrica_core_tests.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\core\..;C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\build\_deps\glfw-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /FS</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <ConformanceMode>true</ConformanceMode>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;FABRICA_SHIP_BUILD=1;FABRICA_USE_GLFW=1;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;FABRICA_SHIP_BUILD=1;FABRICA_USE_GLFW=1;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\core\..;C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\build\_deps\glfw-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\core\..;C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\build\_deps\glfw-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>Release\fabrica_core_common.lib;Release\fabrica_core_async.lib;Release\fabrica_core_assets.lib;Release\fabrica_core_ecs.lib;Release\fabrica_core_input.lib;Release\fabrica_core_app.lib;Release\fabrica_core_jobs.lib;Release\fabrica_core_logging.lib;Release\fabrica_core_memory.lib;Release\fabrica_core_runtime.lib;Release\fabrica_core_window.lib;Release\fabrica_core_async.lib;Release\fabrica_core_ecs.lib;Release\fabrica_core_input.lib;Release\fabrica_core_jobs.lib;Release\fabrica_core_window.lib;Release\fabrica_core_logging.lib;..\_deps\glfw-build\src\Release\glfw3.lib;Release\fabrica_core_common.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi/core/Release/fabrica_core_tests.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi/core/Release/fabrica_core_tests.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\core\..;C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\build\_deps\glfw-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /FS</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <ConformanceMode>true</ConformanceMode>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;FABRICA_SHIP_BUILD=1;FABRICA_USE_GLFW=1;CMAKE_INTDIR="MinSizeRel"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;FABRICA_SHIP_BUILD=1;FABRICA_USE_GLFW=1;CMAKE_INTDIR=\"MinSizeRel\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\core\..;C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\build\_deps\glfw-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\core\..;C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\build\_deps\glfw-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>MinSizeRel\fabrica_core_common.lib;MinSizeRel\fabrica_core_async.lib;MinSizeRel\fabrica_core_assets.lib;MinSizeRel\fabrica_core_ecs.lib;MinSizeRel\fabrica_core_input.lib;MinSizeRel\fabrica_core_app.lib;MinSizeRel\fabrica_core_jobs.lib;MinSizeRel\fabrica_core_logging.lib;MinSizeRel\fabrica_core_memory.lib;MinSizeRel\fabrica_core_runtime.lib;MinSizeRel\fabrica_core_window.lib;MinSizeRel\fabrica_core_async.lib;MinSizeRel\fabrica_core_ecs.lib;MinSizeRel\fabrica_core_input.lib;MinSizeRel\fabrica_core_jobs.lib;MinSizeRel\fabrica_core_window.lib;MinSizeRel\fabrica_core_logging.lib;..\_deps\glfw-build\src\MinSizeRel\glfw3.lib;MinSizeRel\fabrica_core_common.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi/core/MinSizeRel/fabrica_core_tests.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi/core/MinSizeRel/fabrica_core_tests.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\core\..;C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\build\_deps\glfw-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /FS</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <ConformanceMode>true</ConformanceMode>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;FABRICA_SHIP_BUILD=1;FABRICA_USE_GLFW=1;CMAKE_INTDIR="RelWithDebInfo"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;FABRICA_SHIP_BUILD=1;FABRICA_USE_GLFW=1;CMAKE_INTDIR=\"RelWithDebInfo\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\core\..;C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\build\_deps\glfw-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\core\..;C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\build\_deps\glfw-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>RelWithDebInfo\fabrica_core_common.lib;RelWithDebInfo\fabrica_core_async.lib;RelWithDebInfo\fabrica_core_assets.lib;RelWithDebInfo\fabrica_core_ecs.lib;RelWithDebInfo\fabrica_core_input.lib;RelWithDebInfo\fabrica_core_app.lib;RelWithDebInfo\fabrica_core_jobs.lib;RelWithDebInfo\fabrica_core_logging.lib;RelWithDebInfo\fabrica_core_memory.lib;RelWithDebInfo\fabrica_core_runtime.lib;RelWithDebInfo\fabrica_core_window.lib;RelWithDebInfo\fabrica_core_async.lib;RelWithDebInfo\fabrica_core_ecs.lib;RelWithDebInfo\fabrica_core_input.lib;RelWithDebInfo\fabrica_core_jobs.lib;RelWithDebInfo\fabrica_core_window.lib;RelWithDebInfo\fabrica_core_logging.lib;..\_deps\glfw-build\src\RelWithDebInfo\glfw3.lib;RelWithDebInfo\fabrica_core_common.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi/core/RelWithDebInfo/fabrica_core_tests.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi/core/RelWithDebInfo/fabrica_core_tests.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\core\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/core/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine -BC:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi --check-stamp-file C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi/core/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\CMake\share\cmake-4.1\Modules\ExternalProject\shared_internal_commands.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\FetchContent.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\core\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/core/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine -BC:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi --check-stamp-file C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi/core/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\CMake\share\cmake-4.1\Modules\ExternalProject\shared_internal_commands.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\FetchContent.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\core\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/core/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine -BC:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi --check-stamp-file C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi/core/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Program Files\CMake\share\cmake-4.1\Modules\ExternalProject\shared_internal_commands.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\FetchContent.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\core\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/core/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine -BC:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi --check-stamp-file C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi/core/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Program Files\CMake\share\cmake-4.1\Modules\ExternalProject\shared_internal_commands.cmake;C:\Program Files\CMake\share\cmake-4.1\Modules\FetchContent.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\core\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\core\async\future_test.cc" />
+    <ClCompile Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\core\common\holdable_test.cc" />
+    <ClCompile Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\core\common\invocable_test.cc" />
+    <ClCompile Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\core\common\status_test.cc" />
+    <ClCompile Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\core\jobs\executor_test.cc" />
+    <ClCompile Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\core\jobs\task_scheduler_test.cc" />
+    <ClCompile Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\core\logging\logger_test.cc" />
+    <ClCompile Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\core\memory\linear_allocator_test.cc" />
+    <ClCompile Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\core\memory\pool_allocator_test.cc" />
+    <ClCompile Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\core\memory\stack_allocator_test.cc" />
+    <ClCompile Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\core\assets\resource_manager_test.cc" />
+    <ClCompile Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\core\input\input_action_map_test.cc" />
+    <ClCompile Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\core\app\view_application_test.cc" />
+    <ClCompile Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\core\ecs\world_test.cc" />
+    <ClCompile Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\core\runtime\engine_runtime_test.cc" />
+    <ClCompile Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\core\window\event_queue_test.cc" />
+    <ClCompile Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\core\window\glfw_window_backend_test.cc" />
+    <ClCompile Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\core\window\window_system_test.cc" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\ZERO_CHECK.vcxproj">
+      <Project>{308087FC-4760-37BA-9E8A-39A321D4EF59}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\core\fabrica_core_app.vcxproj">
+      <Project>{D9860BA3-E96A-310F-909F-5EB3845039AB}</Project>
+      <Name>fabrica_core_app</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\core\fabrica_core_assets.vcxproj">
+      <Project>{3ABE0623-35E2-3AEC-8F42-E2706EF2507C}</Project>
+      <Name>fabrica_core_assets</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\core\fabrica_core_async.vcxproj">
+      <Project>{CF6576A6-2C62-33BC-A289-F26F1BE05803}</Project>
+      <Name>fabrica_core_async</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\core\fabrica_core_common.vcxproj">
+      <Project>{B27CC10F-0473-3126-9F87-8224577AA30B}</Project>
+      <Name>fabrica_core_common</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\core\fabrica_core_ecs.vcxproj">
+      <Project>{05B32559-5949-357C-A4DD-606DD82BAC54}</Project>
+      <Name>fabrica_core_ecs</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\core\fabrica_core_input.vcxproj">
+      <Project>{9D0C1D10-E63E-36E1-9FAE-1E33078F2865}</Project>
+      <Name>fabrica_core_input</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\core\fabrica_core_jobs.vcxproj">
+      <Project>{64DD955D-198F-3EE0-AF4F-F06753B8E4AE}</Project>
+      <Name>fabrica_core_jobs</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\core\fabrica_core_logging.vcxproj">
+      <Project>{D28EE2E8-BA22-3FF0-89F7-DFC0A8DAF065}</Project>
+      <Name>fabrica_core_logging</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\core\fabrica_core_memory.vcxproj">
+      <Project>{4051A9BD-364C-3875-AE7B-F1FB8257A31B}</Project>
+      <Name>fabrica_core_memory</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\core\fabrica_core_runtime.vcxproj">
+      <Project>{338F35BF-0157-32E6-BBBB-4F34BCB65CE7}</Project>
+      <Name>fabrica_core_runtime</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\core\fabrica_core_window.vcxproj">
+      <Project>{F32F8FD3-BD81-3671-B045-185DF35FD95D}</Project>
+      <Name>fabrica_core_window</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\_deps\glfw-build\src\glfw.vcxproj">
+      <Project>{CF2006CF-396A-3202-8E65-590ABD61761A}</Project>
+      <Name>glfw</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

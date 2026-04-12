@@ -85,3 +85,13 @@
 #if !defined(FABRICA_MEMORY_TRACKING)
 #define FABRICA_MEMORY_TRACKING 0
 #endif
+
+#if !defined(FABRICA_RHI_VERBOSE_LOG)
+#define FABRICA_RHI_VERBOSE_LOG 0
+#endif
+
+namespace Fabrica::Config {
+
+inline constexpr bool kRHIVerboseLogging = FABRICA_RHI_VERBOSE_LOG != 0;
+
+}  // namespace Fabrica::Config

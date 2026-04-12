@@ -91,13 +91,76 @@ fabrica_add_sample(fabrica_pal_sample
 )
 
 if(FABRICA_GLFW_BACKEND_AVAILABLE)
+  find_program(FABRICA_GLSLC_EXECUTABLE
+    NAMES glslc
+    HINTS
+      ENV VULKAN_SDK
+    PATH_SUFFIXES Bin bin
+  )
+
+  if(NOT FABRICA_GLSLC_EXECUTABLE)
+    message(FATAL_ERROR "glslc was not found. Install the Vulkan SDK or add glslc to PATH.")
+  endif()
+
+  set(FABRICA_RHI_TRIANGLE_SHADER_OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/compiled_shaders/rhi_triangle_sample")
+  set(FABRICA_RHI_TRIANGLE_SHADER_SOURCES
+    rhi_triangle_sample/shaders/triangle.vert
+    rhi_triangle_sample/shaders/triangle.frag
+  )
+
+  set(FABRICA_RHI_TRIANGLE_SHADER_OUTPUTS "")
+  foreach(shader_source IN LISTS FABRICA_RHI_TRIANGLE_SHADER_SOURCES)
+    get_filename_component(shader_name "${shader_source}" NAME)
+    set(shader_output "${FABRICA_RHI_TRIANGLE_SHADER_OUTPUT_DIR}/${shader_name}.spv")
+    add_custom_command(
+      OUTPUT "${shader_output}"
+      COMMAND ${CMAKE_COMMAND} -E make_directory "${FABRICA_RHI_TRIANGLE_SHADER_OUTPUT_DIR}"
+      COMMAND ${FABRICA_GLSLC_EXECUTABLE}
+              "${CMAKE_CURRENT_SOURCE_DIR}/${shader_source}"
+              -o "${shader_output}"
+      DEPENDS
+        "${CMAKE_CURRENT_SOURCE_DIR}/${shader_source}"
+      VERBATIM
+    )
+    list(APPEND FABRICA_RHI_TRIANGLE_SHADER_OUTPUTS "${shader_output}")
+  endforeach()
+
+  add_custom_target(fabrica_rhi_triangle_sample_shaders
+    DEPENDS ${FABRICA_RHI_TRIANGLE_SHADER_OUTPUTS}
+  )
+
   fabrica_add_sample(fabrica_runtime_sample
     runtime_glfw_sample/main.cc
     fabrica_core_app
   )
 
+  fabrica_add_sample(fabrica_rhi_triangle_sample
+    rhi_triangle_sample/main.cc
+    fabrica_core_window
+    fabrica_rhi
+    fabrica_rhi_vulkan
+  )
+
+  fabrica_add_sample(fabrica_renderer_sample
+    renderer_sample/main.cc
+    fabrica_core_window
+    fabrica_renderer
+    fabrica_rhi
+    fabrica_rhi_vulkan
+  )
+
+  add_dependencies(fabrica_rhi_triangle_sample fabrica_rhi_triangle_sample_shaders)
+  target_compile_definitions(fabrica_rhi_triangle_sample
+    PRIVATE
+      FABRICA_RHI_TRIANGLE_SHADER_DIR="${FABRICA_RHI_TRIANGLE_SHADER_OUTPUT_DIR}"
+  )
+
   message(STATUS "fabrica_runtime_sample enabled (GLFW provider: ${FABRICA_GLFW_BACKEND_SOURCE})")
+  message(STATUS "fabrica_rhi_triangle_sample enabled (GLFW provider: ${FABRICA_GLFW_BACKEND_SOURCE})")
+  message(STATUS "fabrica_renderer_sample enabled (GLFW provider: ${FABRICA_GLFW_BACKEND_SOURCE})")
 else()
   message(STATUS "GLFW backend unavailable: skipping fabrica_runtime_sample target")
+  message(STATUS "GLFW backend unavailable: skipping fabrica_rhi_triangle_sample target")
+  message(STATUS "GLFW backend unavailable: skipping fabrica_renderer_sample target")
   message(STATUS "To enable sample build: install glfw3 package or configure with -DFABRICA_FETCH_GLFW=ON")
 endif()

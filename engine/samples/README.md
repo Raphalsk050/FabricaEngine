@@ -26,6 +26,7 @@ cmake --build build --config Debug
 - `fabrica_view_application_sample`: `BaseView` + `ViewApplication` lifecycle.
 - `fabrica_pal_sample`: PAL threading and async filesystem adapters.
 - `fabrica_runtime_sample`: full GLFW-backed runtime sample (only when GLFW is available).
+- `fabrica_rhi_triangle_sample`: minimal swapchain + command-list triangle sample on top of the RHI (only when GLFW is available).
 
 ## Run
 

@@ -18,6 +18,12 @@ bool GlfwWindowBackend::Initialize(const WindowConfig& config) {
     return false;
   }
 
+  if (config.graphics_api == WindowGraphicsApi::kNone) {
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+  } else {
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
+  }
+
   GLFWwindow* window = glfwCreateWindow(config.width, config.height,
                                         config.title.c_str(), nullptr, nullptr);
   if (window == nullptr) {
@@ -26,9 +32,12 @@ bool GlfwWindowBackend::Initialize(const WindowConfig& config) {
   }
 
   native_window_ = window;
-  glfwMakeContextCurrent(window);
-  glfwSwapInterval(config.vsync_enabled ? 1 : 0);
   glfwSetWindowUserPointer(window, this);
+
+  if (config.graphics_api == WindowGraphicsApi::kOpenGL) {
+    glfwMakeContextCurrent(window);
+    glfwSwapInterval(config.vsync_enabled ? 1 : 0);
+  }
 
   glfwSetFramebufferSizeCallback(
       window, +[](GLFWwindow* glfw_window, int width, int height) {
@@ -103,8 +112,9 @@ bool GlfwWindowBackend::Initialize(const WindowConfig& config) {
 #if FABRICA_WINDOW_VERBOSE_LOG
   FABRICA_LOG(Window, Debug)
       << "[Window] Created " << config.width << "x" << config.height
-      << " @ monitor " << config.monitor_index << " | backend=GLFW | vsync="
-      << (config.vsync_enabled ? "ON" : "OFF");
+      << " @ monitor " << config.monitor_index << " | backend=GLFW | api="
+      << (config.graphics_api == WindowGraphicsApi::kOpenGL ? "OpenGL" : "None")
+      << " | vsync=" << (config.vsync_enabled ? "ON" : "OFF");
 #endif
   return true;
 #else
@@ -133,6 +143,10 @@ bool GlfwWindowBackend::PresentFrame() {
     return false;
   }
 
+  if (config_.graphics_api == WindowGraphicsApi::kNone) {
+    return true;
+  }
+
   GLFWwindow* window = static_cast<GLFWwindow*>(native_window_);
   glfwMakeContextCurrent(window);
   glfwSwapBuffers(window);
@@ -151,6 +165,9 @@ Vec2i GlfwWindowBackend::GetFramebufferSize() const { return framebuffer_size_; 
 void GlfwWindowBackend::Shutdown() {
 #if defined(FABRICA_USE_GLFW)
   if (native_window_ != nullptr) {
+    if (config_.graphics_api == WindowGraphicsApi::kOpenGL) {
+      glfwMakeContextCurrent(nullptr);
+    }
     glfwDestroyWindow(static_cast<GLFWwindow*>(native_window_));
     native_window_ = nullptr;
   }

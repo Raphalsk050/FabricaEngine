@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\CMakeFiles\bfa688f5b001542333364977211b0790\fullscreen.vert.spv.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\CMakeFiles\bfa688f5b001542333364977211b0790\pbr.frag.spv.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\CMakeFiles\bfa688f5b001542333364977211b0790\pbr.vert.spv.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\CMakeFiles\bfa688f5b001542333364977211b0790\tonemapping.frag.spv.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\CMakeFiles\89072bf7e8d692f915e50c966027084e\fabrica_renderer_shaders.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\renderer\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\renderer\CMakeFiles\fabrica_renderer_shaders" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{C261EE1A-5AE2-31AF-AE17-00F1EE1A5F4E}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

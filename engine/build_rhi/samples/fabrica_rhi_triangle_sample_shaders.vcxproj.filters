@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\CMakeFiles\f02223e7a76af41a67be7253b25f2342\triangle.frag.spv.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\CMakeFiles\f02223e7a76af41a67be7253b25f2342\triangle.vert.spv.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\CMakeFiles\3bd30a78ccc6db5a9bfe3ab88297bd33\fabrica_rhi_triangle_sample_shaders.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\samples\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\samples\CMakeFiles\fabrica_rhi_triangle_sample_shaders" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{C261EE1A-5AE2-31AF-AE17-00F1EE1A5F4E}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

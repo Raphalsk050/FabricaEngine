@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <ProjectOutputs>
+    <ProjectOutput>
+      <FullPath>C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\x64\Debug\ZERO_CHECK</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\renderer\x64\Debug\fabrica_renderer_shaders</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Users\rapha\Documents\_PROJECTS\FabricaEngine\engine\build_rhi\samples\Debug\fabrica_renderer_sample.exe</FullPath>
+    </ProjectOutput>
+  </ProjectOutputs>
+  <ContentFiles />
+  <SatelliteDlls />
+  <NonRecipeFileRefs />
+</Project>

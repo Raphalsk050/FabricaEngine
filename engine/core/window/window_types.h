@@ -5,6 +5,14 @@
 namespace Fabrica::Core::Window {
 
 /**
+ * Selects which graphics API, if any, owns presentation for the window.
+ */
+enum class WindowGraphicsApi {
+  kOpenGL = 0,
+  kNone,
+};
+
+/**
  * Stores integer 2D coordinates.
  */
 struct Vec2i {
@@ -30,6 +38,9 @@ struct WindowConfig {
 
   bool vsync_enabled = true;
   ///< Enables swap interval synchronization when supported.
+
+  WindowGraphicsApi graphics_api = WindowGraphicsApi::kOpenGL;
+  ///< Selects whether the window owns an OpenGL context or no graphics API.
 
   int monitor_index = 0;
   ///< Target monitor index for fullscreen or placement policies.

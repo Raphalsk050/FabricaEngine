@@ -1,0 +1,10 @@
+^C:\USERS\RAPHA\DOCUMENTS\_PROJECTS\FABRICAENGINE\ENGINE\RENDERER\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine -BC:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi --check-stamp-file C:/Users/rapha/Documents/_PROJECTS/FabricaEngine/engine/build_rhi/renderer/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
